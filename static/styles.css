@@ -1,0 +1,107 @@
+:root {
+    /*--form-fore-color: blue;*/
+    --header-fore-color: #2660C6;
+    --header-back-color: #F5F1F1;
+    --universal-margin: 10px;
+}
+
+/* box sizing: http://www.paulirish.com/2012/box-sizing-border-box-ftw */
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    background-color: #F5F1F1;
+    font-family: 'Garamond', serif;
+}
+
+body {
+    background-color: inherit;
+    display: block;
+    height: 100%;
+    margin: 20px 0 0 0;
+    width: 100%;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+footer {
+    background-color: inherit;
+    margin: 5px 0;
+    text-align: center;
+
+    /* sticky footer */
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    height: 20px;
+    line-height: 20px; /* Vertically center the text there */
+}
+
+form {
+    margin: 0 auto;
+    width: 500px;
+}
+
+table {
+    font-weight: 400;
+    overflow-y: scroll;
+    /* max-height: 60%; */
+    width: 60vw;
+    margin: 0 auto;
+}
+
+td>button {
+    display: inline-block;
+}
+
+td>input {
+    display: inline-block;
+    margin: 0;
+}
+
+section {
+    margin: 0 auto;
+    text-align: center;
+    width: 500px;
+}
+
+td.include-in-budget {
+    max-width: 75px;
+}
+
+td[class^="transaction-"], th[class^="transaction-"] {
+    max-width: 130px;
+}
+
+.description-edit-input {
+    margin: 0;
+    width: 276px;
+}
+
+#description-edit-label {
+    display: block;
+}
+
+.description-edit-submit, .description-edit-cancel {
+    margin: 0;
+    width: 136px;
+}
+
+#cash_balance {
+    text-align: center;
+}
+
+#get-cash_balance {
+    border: 5px solid black;
+    font-family: 'Dosis', sans-serif;
+    font-size: 4em;
+    font-weight: 700;
+    height: 150px;
+    margin: 0 auto;
+}
+
+#monthly_activity, #get-income, #get-spending, #get-month-balance {
+    font-size: 1.25em;
+}

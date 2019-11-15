@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}
+    Plaid Authenticate
+{% endblock %}
+
+{% block main %}
+
+    <div id="container">
+        <p class='plaid-public-token' id='{{ public_token }}'>Link Update</p>
+        <p>
+            Launch the Link Updater by clicking below:
+        </p>
+        <button id="linkButton">Link Update</button>
+    </div>
+    <p class='plaid-environment' id='{{ plaid_environment }}'>Environment: {{ plaid_environment }}</p>
+
+    <div id="success">
+        <p>
+            Link Update
+            <a href="{{ url_for('index') }}">Continue</a>
+        </p>
+    </div>
+    <script type='text/javascript' src='{{ url_for('static', filename='js/plaid-link-update.js') }}'></script>
+
+{% endblock %}

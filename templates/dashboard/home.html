@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Bookkeeper
+{% endblock %}
+
+
+{% block main %}
+    <div class='container'>
+        <div class='row'>
+            <ul>
+                <li>Income: <span id='monthly-income'>{{ income }}</span></li>
+                <li>Spending: <span id='monthly-spending'>{{ spending }}</span></li>
+            </ul>
+        </div>
+        <div class='row'>
+            <button class='refresh-accounts' id='{{ account_id }}' type='button'>Refresh</button>
+        </div>
+        <table class='sortable'>
+            <thead>
+            <tr>
+                <th class='transaction-date' data-sort='date'></th>
+                <th class='transaction-amount' data-sort='amount'></th>
+                <th data-sort='name'></th>
+                <th data-sort='name'></th>
+                <th class='include-in-budget'></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for spending_data in transactions %}
+                {% if spending_data['amount'] > 0 and spending_data['category_id'] != '16000000' %}
+                    <tr>
+                        <td class='transaction-date'>{{ spending_data['date'] }}</td>
+                        <td class='transaction-amount'>${{ spending_data['amount'] }}</td>
+                        <td class='description-edit-icon'
+                            id='{{ spending_data['transaction_id'] }}'>{{ spending_data['name'] }}
+                            <!-- <i class='fas fa-edit' id='edit-icon'></i> -->
+                            <span class='icon-link'></span>
+                        </td>
+                        <td class='description-edit'>
+                            <label for='{{ spending_data['transaction_id'] }}' id='description-edit-label'>Edit
+                                Description</label>
+                            <input type='text' class='description-edit-input' id='{{ spending_data['transaction_id'] }}'
+                                   name='description' value='{{ spending_data['name'] }}'>
+                            <button class='description-edit-submit primary' type='submit'>Save</button>
+                            <button class='description-edit-cancel' type='submit'>Cancel</button>
+                        </td>
+                        <td>{{ spending_data['category'] }}</td>
+                        <td class='include-in-budget'><input type='checkbox' class='toggle-budget'
+                                                             id='{{ spending_data['transaction_id'] }}'
+                                {% if spending_data['budget'] == 'true' %} checked {% endif %}></td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script type='text/javascript' src='{{ url_for('static', filename='js/sort-table.js') }}'></script>
+    <script type='text/javascript' src='{{ url_for('static', filename='js/edit-description.js') }}'></script>
+    <script type='text/javascript' src='{{ url_for('static', filename='js/update-accounts.js') }}'></script>
+    <script type='text/javascript' src='{{ url_for('static', filename='js/toggle-budget.js') }}'></script>
+
+{% endblock %}

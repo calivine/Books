@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    My Accounts
+{% endblock %}
+
+{% block main %}
+    <div id="container">
+        <table>
+            <tbody>
+            {% for account in accounts %}
+                <tr>
+                    <td>{{ account['item_mask'] }}</td>
+                    <td><a href='{{ url_for('user.update_account_link', token=account['access_token']) }}'><span class='icon-alert'></span></a></td>
+                    <td><a href='{{ url_for('user.update_item_accounts', item_id=account['id']) }}'>Update Accounts</a></td>
+                    <td><a href='{{ url_for('user.delete', access_token=account['access_token']) }}'>Delete</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <p>
+            Add A New Account:
+        </p>
+        <button id="link-btn">Add</button>
+    </div>
+    <div id="success">
+        <p>
+            Plaid registration and authentication success. Press
+            <a href="{{ url_for('index') }}">Continue</a> and log in.
+        </p>
+        <p class='plaid-environment' id='{{ plaid_environment }}'>Environment: {{ plaid_environment }}</p>
+    </div>
+    <script type='text/javascript' src='{{ url_for('static', filename='js/plaid-link.js') }}'></script>
+
+{% endblock %}

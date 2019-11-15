@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Bookkeeper | Register
+{% endblock %}
+
+
+{% block main %}
+    <form action='{{ url_for('auth.register') }}' method='post'>
+        <label for='username'>Username</label>
+        <input name='username' id='username' type='text' required>
+        <label for='password'>Password</label>
+        <input name='password' id='password' type='password' required>
+        <button class='btn-primary' type='submit'>Register</button>
+    </form>
+{% endblock %}

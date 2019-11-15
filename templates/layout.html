@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang='en'>
+<head>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta -->
+    <meta charset='utf-8'/>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <!-- mini.css -->
+    <link rel='stylesheet' href='https://cdn.rawgit.com/Chalarangelo/mini.css/v3.0.0/dist/mini-default.min.css'>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <!-- JQuery -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js'></script>
+    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+    <!-- Personal CSS stylesheet -->
+    <link href='{{ url_for('static', filename='styles.css') }}' rel='stylesheet'/>
+    <title>{% block title %}Bookkeeper{% endblock %}</title>
+</head>
+<header>
+    <a href='{{ url_for('index') }}' class='button'>Home</a>
+    {% if session.user_id %}
+    <a href='{{ url_for('user.accounts') }}' class='button'>Accounts</a>
+    {% endif %}
+
+</header>
+<body>
+<h1>Book Keeper <small>Personal Finance Assistant</small></h1>
+{% block main %}{% endblock %}
+</body>
+{% block footer %}
+    <footer>
+        <p>{{ EN }}</p>
+        <a href='https://github.com/calivine/Bookkeeper'>Git Repository</a>
+        &copy;2018
+    </footer>
+{% endblock %}
+</html>
