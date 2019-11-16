@@ -1,8 +1,9 @@
 import os
 import plaid
+from plaid.errors import APIError, ItemError
 from flask import Blueprint, redirect, render_template, request, session, url_for, jsonify
-from config.envSettings import CLIENT_ID, SECRET_KEY, PUBLIC_KEY
 from database.db import get_db
+from app import client
 
 PLAID_ENV = os.getenv('PLAID_ENV', 'development')
 
@@ -10,8 +11,8 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 
 
 # VIEW item info
-@bp.route('/accounts', methods=('GET', 'POST'))
-def accounts():
+@bp.route('/items', methods=('GET', 'POST'))
+def items():
     user_id = session['user_id']
     db = get_db()
     """
@@ -24,7 +25,7 @@ def accounts():
     """
     account_list = db.execute('SELECT * FROM item WHERE user_id = ?', (user_id,)).fetchall()
 
-    return render_template('user/accounts.html', accounts=account_list,
+    return render_template('user/items.html', accounts=account_list,
                            plaid_environment=PLAID_ENV)
 
 
@@ -33,12 +34,9 @@ def accounts():
 # https://plaid.com/docs/#exchange-token-flow
 @bp.route('/get_access_token', methods=['POST'])
 def get_access_token():
-    client = plaid.Client(client_id=CLIENT_ID,
-                          secret=SECRET_KEY,
-                          public_key=PUBLIC_KEY,
-                          environment=PLAID_ENV)
     db = get_db()
     public_token = request.form['public_token']
+
     try:
         exchange_response = client.Item.public_token.exchange(public_token)
     except plaid.errors.PlaidError as e:
@@ -55,7 +53,7 @@ def get_access_token():
     db.commit()
     try:
         account_list = client.Accounts.get(access_token)
-    except plaid.errors.PlaidError as e:
+    except ItemError as e:
         print(e)
         return jsonify(exchange_response)
     for account in account_list['accounts']:
@@ -65,34 +63,39 @@ def get_access_token():
 
 
 # CREATE/UPDATE accounts
-@bp.route('/update/item/accounts/<item_id>')
-def update_item_accounts(item_id):
-    client = plaid.Client(client_id=CLIENT_ID,
-                          secret=SECRET_KEY,
-                          public_key=PUBLIC_KEY,
-                          environment=PLAID_ENV)
-    access_token = get_db().execute("SELECT access_token FROM item WHERE id = ?", (item_id,)).fetchone()
+@bp.route('/update/item/accounts', methods=['POST'])
+def update_item_accounts():
+    mask = request.form['item_mask']
+
+    access_token = get_db().execute("SELECT access_token FROM item WHERE item_mask = ?", (mask,)).fetchone()
+
+    try:
+        item_response = client.Item.get(access_token['access_token'])
+        print('Products: ', item_response['item']['available_products'], item_response['item']['billed_products'])
+        print('Last Successful Update: ', item_response['status']['transactions']['last_successful_update'])
+        print('Last Failed Update: ', item_response['status']['transactions']['last_failed_update'])
+        print('Institution ID: ', item_response['item']['institution_id'])
+        print('Item ID: ', item_response['item']['item_id'])
+        print('Error: ', item_response['item']['error'])
+        last_update_time = item_response['status']['transactions']['last_successful_update']
+    except ItemError as e:
+        print(e)
+
     try:
         response = client.Accounts.get(access_token['access_token'])
     except plaid.errors.PlaidError as e:
         print(e)
-        return redirect(url_for('user.accounts'))
+        return jsonify(last_update_time)
     for account in response['accounts']:
         print(account['account_id'], account['mask'], account['name'])
-        test_account = get_db().execute("SELECT id FROM account WHERE id = ?", (account['account_id'],)).fetchone()
-        print(test_account['id'])
-        print(type(test_account['id']))
     # TODO: INSERT INTO account (id, mask, name, official_name, type, subtype, access_token) VALUES (?,?,?,?,?,?,?)
-    return redirect(url_for('user.accounts'))
+    return jsonify(last_update_time)
+
 
 # UPDATE item
 # Update credentials for Plaid Link
 @bp.route('/update-account-link/<token>', methods=['GET'])
 def update_account_link(token):
-    client = plaid.Client(client_id=CLIENT_ID,
-                          secret=SECRET_KEY,
-                          public_key=PUBLIC_KEY,
-                          environment=PLAID_ENV)
 
     # Get a new public token
     try:
@@ -104,24 +107,21 @@ def update_account_link(token):
 
     return render_template('user/link_update.html',
                            public_token=public_token,
-                           plaid_environment=PLAID_ENV)
+                           plaid_environment=PLAID_ENV,
+                           public_key=client.public_key)
 
 
 # DELETE item
 @bp.route('/delete/<access_token>', methods=['GET'])
 def delete(access_token):
-    client = plaid.Client(client_id=CLIENT_ID,
-                          secret=SECRET_KEY,
-                          public_key=PUBLIC_KEY,
-                          environment=PLAID_ENV)
     try:
         response = client.Item.remove(access_token)
     except plaid.errors.PlaidError as e:
         print(e)
-        return redirect(url_for('item.accounts'))
+        return redirect(url_for('user.items'))
     if response['removed']:
         db = get_db()
 
         db.execute('DELETE FROM item WHERE access_token = ?', [access_token])
-    return redirect(url_for('user.accounts'))
+    return redirect(url_for('user.items'))
 

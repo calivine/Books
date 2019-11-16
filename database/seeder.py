@@ -16,16 +16,16 @@ def seed_db():
         },
         {
             'user_id': 1,
-            'access_token': 'access-development-e9c83380-03f1-4af8-9dcb-73cad8d3ea0b',
-            'id': 'o7bZ5KDnONUeLw0zrEJAIg4mLmXQLofB6gB0g',
-            'item_mask': 'gB0g'
+            'access_token': 'access-development-6aab33ce-a540-4bf0-a9d1-5db9e7011936',
+            'id': 'EPQdNaz4mBh493EEvVmoUADK0ZgrjMHpM46d6',
+            'item_mask': '46d6'
         },
         {
             'user_id': 1,
             'access_token': 'access-development-5abb4009-a14d-49d1-8042-15baaeaa7dcb',
             'id': 'LQ8BRZzR7vs6d0KLa5QBFL04K1xj5KH0XxpXK',
             'item_mask': 'xpXK'
-        }
+        },
     ]
 
     accounts = [

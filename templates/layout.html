@@ -20,7 +20,7 @@
 <header>
     <a href='{{ url_for('index') }}' class='button'>Home</a>
     {% if session.user_id %}
-    <a href='{{ url_for('user.accounts') }}' class='button'>Accounts</a>
+    <a href='{{ url_for('user.items') }}' class='button'>Accounts</a>
     {% endif %}
 
 </header>
@@ -30,7 +30,6 @@
 </body>
 {% block footer %}
     <footer>
-        <p>{{ EN }}</p>
         <a href='https://github.com/calivine/Bookkeeper'>Git Repository</a>
         &copy;2018
     </footer>

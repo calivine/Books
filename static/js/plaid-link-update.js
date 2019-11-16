@@ -1,5 +1,8 @@
+
 // Initialize Link with the token parameter
 // set to the generated public_token for the Item
+$('#success').hide();
+
 let public_token = $('.plaid-public-token').attr('id');
 let environment = $('.plaid-environment').attr('id');
 let linkHandler = Plaid.create({

@@ -6,20 +6,66 @@
 {% block main %}
 
     <div id="container">
-        <p class='plaid-public-token' id='{{ public_token }}'>Link Update</p>
         <p>
             Launch the Link Updater by clicking below:
         </p>
         <button id="linkButton">Link Update</button>
     </div>
-    <p class='plaid-environment' id='{{ plaid_environment }}'>Environment: {{ plaid_environment }}</p>
-
     <div id="success">
+        <div class='card'></div>
         <p>
             Link Update
             <a href="{{ url_for('index') }}">Continue</a>
         </p>
     </div>
-    <script type='text/javascript' src='{{ url_for('static', filename='js/plaid-link-update.js') }}'></script>
+    <script>
+        (function($) {
+            // Initialize Link with the token parameter
+            // set to the generated public_token for the Item
+            $('#success').hide();
 
+            let linkHandler = Plaid.create({
+                env: '{{ plaid_environment }}',
+                clientName: 'The Vault',
+                key: '{{ public_key }}',
+                product: ['auth', 'transactions'],
+                token: '{{ public_token }}',
+                onSuccess: function (public_token, metadata) {
+                    // You do not need to repeat the /item/public_token/exchange
+                    // process when a user uses Link in update mode.
+                    // The Item's access_token has not changed.
+                    $('#success').show();
+                    let data = metadata['accounts'];
+                    console.log(metadata['accounts']);
+                    console.log(public_token);
+                    let account_data = '<p>' + data + '</p>';
+                    $('.card').innerHTML = account_data;
+                },
+                onExit: function (err, metadata) {
+                    // The user exited the Link flow.
+                    if (err != null) {
+                        // The user encountered a Plaid API error prior
+                        // to exiting.
+                        console.log(err['error_code'], err['error_message']);
+                        $('#success').show();
+                        let error_message = '<p>' + err['error_message'] + '</p>';
+                        $('.card').innerHTML = error_message;
+                    }
+                    // metadata contains information about the institution
+                    // that the user selected and the most recent API request
+                    // IDs. Storing this information is helpful for support.
+                },
+            });
+            // Trigger the authentication view
+            document.getElementById('linkButton').onclick = function () {
+                // Link will automatically detect the institution ID
+                // associated with the public token and present the
+                // credential view to your user.
+                linkHandler.open();
+            };
+        })(jQuery);
+    </script>
 {% endblock %}
+
+
+
