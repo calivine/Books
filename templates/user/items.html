@@ -9,11 +9,11 @@
         <table>
             <tbody>
             {% for account in accounts %}
-                <tr>
+                <tr class='item-row' id='{{ account['item_mask'] }}'>
                     <td>{{ account['item_mask'] }}</td>
                     <td><a href='{{ url_for('user.update_account_link', token=account['access_token']) }}'><span class='icon-alert'></span></a></td>
                     <td class='item-info' id='{{ account['item_mask'] }}'><a href='#'>Update Accounts</a></td>
-                    <td><a href='{{ url_for('user.delete', access_token=account['access_token']) }}'>Delete</a></td>
+                    <td class='item-delete'><a href='{{ url_for('user.delete', access_token=account['access_token']) }}'>Delete</a></td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -32,14 +32,22 @@
     </div>
     <script>
         $(function() {
-            $('td.item-info').each(function() {
-                let mask = $(this).attr('id');
+            $('tr.item-row').each(function() {
+                let mask = this.id;
+                console.log(mask);
+                // let mask = $(this).attr('id');
                 $(this).on('click', function() {
+                    $('div#item-details').remove();
                     $.post('/user/update/item/accounts', {
                         item_mask: mask
                     }, function(item) {
-                        let $display_time = '<td>' + item + '</td>';
-                        $(this).after($display_time);
+                        let $display_time = '<div id="item-details">' + item['item_id'] + '</div>';
+                        // Build rest of the details popup
+                        // $('div#item-details').append()
+                        $('div#container').append($display_time);
+                        $('div#item-details').addClass('item-details-popup');
+                        console.log($display_time);
+
                     });
                 });
             });

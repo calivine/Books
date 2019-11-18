@@ -80,6 +80,12 @@ td[class^="transaction-"], th[class^="transaction-"] {
     width: 276px;
 }
 
+.item-details-popup {
+    position: fixed;
+    z-index: 10;
+    margin: 0 auto;
+}
+
 #description-edit-label {
     display: block;
 }
@@ -105,3 +111,5 @@ td[class^="transaction-"], th[class^="transaction-"] {
 #monthly_activity, #get-income, #get-spending, #get-month-balance {
     font-size: 1.25em;
 }
+
+

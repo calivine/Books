@@ -29,6 +29,7 @@ def items():
                            plaid_environment=PLAID_ENV)
 
 
+# EXCHANGE public token
 # Exchange token flow - exchange a Link public_token for
 # an API access_token
 # https://plaid.com/docs/#exchange-token-flow
@@ -62,13 +63,13 @@ def get_access_token():
     return jsonify(exchange_response)
 
 
-# CREATE/UPDATE accounts
+# UPDATE accounts
+# Add account information associated with item
 @bp.route('/update/item/accounts', methods=['POST'])
 def update_item_accounts():
     mask = request.form['item_mask']
 
     access_token = get_db().execute("SELECT access_token FROM item WHERE item_mask = ?", (mask,)).fetchone()
-
     try:
         item_response = client.Item.get(access_token['access_token'])
         print('Products: ', item_response['item']['available_products'], item_response['item']['billed_products'])
@@ -81,15 +82,35 @@ def update_item_accounts():
     except ItemError as e:
         print(e)
 
+    if item_response is not None:
+        item_details = {
+            'item_id': item_response['item']['item_id'],
+            'last_update': item_response['status']['transactions']['last_successful_update'],
+            'last_failed_update': item_response['status']['transactions']['last_failed_update'],
+            'institution': item_response['item']['institution_id']
+        }
+
     try:
         response = client.Accounts.get(access_token['access_token'])
     except plaid.errors.PlaidError as e:
         print(e)
-        return jsonify(last_update_time)
-    for account in response['accounts']:
-        print(account['account_id'], account['mask'], account['name'])
+
+
+    if response is not None:
+        i = 1
+        for account in response['accounts']:
+            acct = 'account' + str(i)
+            item_details[acct] = {
+                'id': account['account_id'],
+                'mask': account['mask'],
+                'name': account['name'],
+                'current_balance': account['balances']['current'],
+                'available_balance': account['balances']['available']
+            }
+            i += 1
+            print(account['account_id'], account['mask'], account['name'], account['balances']['current'], account['balances']['available'])
     # TODO: INSERT INTO account (id, mask, name, official_name, type, subtype, access_token) VALUES (?,?,?,?,?,?,?)
-    return jsonify(last_update_time)
+    return jsonify(item_details)
 
 
 # UPDATE item
