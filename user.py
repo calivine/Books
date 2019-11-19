@@ -3,9 +3,15 @@ import plaid
 from plaid.errors import APIError, ItemError
 from flask import Blueprint, redirect, render_template, request, session, url_for, jsonify
 from database.db import get_db
-from app import client
-
+from config.envSettings import CLIENT_ID, SECRET_KEY, PUBLIC_KEY
 PLAID_ENV = os.getenv('PLAID_ENV', 'development')
+
+client = plaid.Client(client_id=CLIENT_ID,
+                      secret=SECRET_KEY,
+                      public_key=PUBLIC_KEY,
+                      environment=PLAID_ENV,
+                      api_version='2019-05-29')
+
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 
@@ -72,13 +78,7 @@ def update_item_accounts():
     access_token = get_db().execute("SELECT access_token FROM item WHERE item_mask = ?", (mask,)).fetchone()
     try:
         item_response = client.Item.get(access_token['access_token'])
-        print('Products: ', item_response['item']['available_products'], item_response['item']['billed_products'])
-        print('Last Successful Update: ', item_response['status']['transactions']['last_successful_update'])
-        print('Last Failed Update: ', item_response['status']['transactions']['last_failed_update'])
-        print('Institution ID: ', item_response['item']['institution_id'])
-        print('Item ID: ', item_response['item']['item_id'])
         print('Error: ', item_response['item']['error'])
-        last_update_time = item_response['status']['transactions']['last_successful_update']
     except ItemError as e:
         print(e)
 
@@ -95,7 +95,6 @@ def update_item_accounts():
     except plaid.errors.PlaidError as e:
         print(e)
 
-
     if response is not None:
         i = 1
         for account in response['accounts']:
@@ -108,7 +107,6 @@ def update_item_accounts():
                 'available_balance': account['balances']['available']
             }
             i += 1
-            print(account['account_id'], account['mask'], account['name'], account['balances']['current'], account['balances']['available'])
     # TODO: INSERT INTO account (id, mask, name, official_name, type, subtype, access_token) VALUES (?,?,?,?,?,?,?)
     return jsonify(item_details)
 

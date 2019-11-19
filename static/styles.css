@@ -5,6 +5,11 @@
     --universal-margin: 10px;
 }
 
+@font-face {
+    font-family: 'Akkurat';
+    src: url("../fonts/Akkurat.ttf");
+}
+
 /* box sizing: http://www.paulirish.com/2012/box-sizing-border-box-ftw */
 * {
     -webkit-box-sizing: border-box;
@@ -14,7 +19,7 @@
 
 html {
     background-color: #F5F1F1;
-    font-family: 'Garamond', serif;
+    font-family: 'Akkurat', sans-serif;
 }
 
 body {
@@ -80,10 +85,25 @@ td[class^="transaction-"], th[class^="transaction-"] {
     width: 276px;
 }
 
-.item-details-popup {
+td.item-info {
+    width: 100px;
+}
+
+#item-details-display {
+    background-color: #D3E7E9;
     position: fixed;
     z-index: 10;
-    margin: 0 auto;
+    margin: 0 30vw;
+    height: 30vh;
+}
+
+#close-details {
+    margin: 0 175px;
+    width: 175px;
+}
+
+#item-details-list {
+    list-style-type: none;
 }
 
 #description-edit-label {
