@@ -10,12 +10,6 @@ def seed_db():
     items = [
         {
             'user_id': 1,
-            'access_token': 'access-development-a76d833e-70ce-45c8-bbb3-9ea2bc6d5bb7',
-            'id': 'OEX9y0o4bKIjgKBK98Y6uMjvDw8kzzC8mybay',
-            'item_mask': 'ybay'
-        },
-        {
-            'user_id': 1,
             'access_token': 'access-development-6aab33ce-a540-4bf0-a9d1-5db9e7011936',
             'id': 'EPQdNaz4mBh493EEvVmoUADK0ZgrjMHpM46d6',
             'item_mask': '46d6'
@@ -26,26 +20,32 @@ def seed_db():
             'id': 'LQ8BRZzR7vs6d0KLa5QBFL04K1xj5KH0XxpXK',
             'item_mask': 'xpXK'
         },
+        {
+            'user_id': 1,
+            'access_token': 'access-development-a95f3a36-87b6-4107-96b1-5768a1361658',
+            'id': 'bOXYMqJbJETBorONbvMxULbxY6dm77IqZnKwn',
+            'item_mask': 'nKwn'
+        }
     ]
 
     accounts = [
         {
-            'id': 'MgRoBAEb53UmLVrVezxdcZYLkMxPdXtMzD3qY',
+            'id': 'gnVYadbybXIP6yvXDKnoHmwvj39JAktqYB1OV',
             'mask': '3165',
             'name': 'TD SIMPLE SAVINGS',
             'official_name': 'TD SIMPLE SAVINGS',
             'type': 'depository',
             'subtype': 'savings',
-            'access_token': 'access-development-a76d833e-70ce-45c8-bbb3-9ea2bc6d5bb7'
+            'access_token': 'access-development-a95f3a36-87b6-4107-96b1-5768a1361658'
         },
         {
-            'id': 'OEX9y0o4bKIjgKBK98Y6uMjJpVo4nau8mXKDy',
+            'id': 'bOXYMqJbJETBorONbvMxULbODgj9yPFqZN7Ln',
             'mask': '3667',
             'name': 'TD CONVENIENCE CHECKING',
             'official_name': 'TD CONVENIENCE CHECKING',
             'type': 'depository',
             'subtype': 'checking',
-            'access_token': 'access-development-a76d833e-70ce-45c8-bbb3-9ea2bc6d5bb7'
+            'access_token': 'access-development-a95f3a36-87b6-4107-96b1-5768a1361658'
         }
     ]
     db = get_db()

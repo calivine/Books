@@ -138,9 +138,7 @@ def delete(access_token):
     except plaid.errors.PlaidError as e:
         print(e)
         return redirect(url_for('user.items'))
-    if response['removed']:
-        db = get_db()
 
-        db.execute('DELETE FROM item WHERE access_token = ?', [access_token])
+    get_db().execute('DELETE FROM item WHERE access_token = ?', [access_token]).commit()
     return redirect(url_for('user.items'))
 

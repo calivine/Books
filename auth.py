@@ -27,15 +27,14 @@ def register():
         if error is None:
             db.execute('INSERT INTO user (name, password) VALUES (?,?)', (username, generate_password_hash(password)))
             db.commit()
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('dashboard.home'))
 
         flash(error)
     return render_template('auth/register.html')
 
 
-@bp.route('/login', methods=('GET', 'POST'))
+@bp.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
         db = get_db()
         username = request.form['username']
         password = request.form['password']
@@ -50,9 +49,7 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             return redirect(url_for('dashboard.home'))
-
         flash(error)
-    return render_template('auth/login.html')
 
 
 @bp.before_app_request
@@ -75,7 +72,7 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('index'))
 
         return view(**kwargs)
 

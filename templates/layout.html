@@ -20,12 +20,22 @@
 <header>
     <a href='{{ url_for('index') }}' class='button'>Home</a>
     {% if session.user_id %}
-    <a href='{{ url_for('user.items') }}' class='button'>Accounts</a>
+        <a href='{{ url_for('user.items') }}' class='button'>Accounts</a>
+        <a href='{{ url_for('auth.logout') }}' class='button'>Logout</a>
+    {% else %}
+        <form action='{{ url_for('auth.login') }}' method='post'>
+            <label for='username'>Username</label>
+            <input name='username' id='username' type='text' required>
+            <label for='password'>Password</label>
+            <input name='password' id='password' type='password' required>
+            <button class='btn-primary' type='submit'>Submit</button>
+        </form>
     {% endif %}
-
 </header>
 <body>
-<h1>Book Keeper <small>Personal Finance Assistant</small></h1>
+<h1>Book Keeper
+    <small>Personal Finance Assistant</small>
+</h1>
 {% block main %}{% endblock %}
 </body>
 {% block footer %}

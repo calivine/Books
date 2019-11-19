@@ -28,7 +28,6 @@ body {
     height: 100%;
     margin: 20px 0 0 0;
     width: 100%;
-    font-family: 'Segoe UI', sans-serif;
 }
 
 footer {
@@ -44,26 +43,15 @@ footer {
     line-height: 20px; /* Vertically center the text there */
 }
 
-form {
-    margin: 0 auto;
-    width: 500px;
-}
-
 table {
     font-weight: 400;
     overflow-y: scroll;
-    /* max-height: 60%; */
-    width: 60vw;
     margin: 0 auto;
 }
 
-td>button {
+td>button, td>input, form {
     display: inline-block;
-}
-
-td>input {
-    display: inline-block;
-    margin: 0;
+    margin: 0 auto;
 }
 
 section {
@@ -85,8 +73,8 @@ td[class^="transaction-"], th[class^="transaction-"] {
     width: 276px;
 }
 
-td.item-info {
-    width: 100px;
+td[class^="item-"] {
+    max-width: 75px;
 }
 
 #item-details-display {

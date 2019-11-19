@@ -11,7 +11,7 @@
             {% for account in accounts %}
                 <tr class='item-row' id='{{ account['item_mask'] }}'>
                     <td>****{{ account['item_mask'] }}</td>
-                    <td><a href='{{ url_for('user.update_account_link', token=account['access_token']) }}'><span class='icon-help'></span></a></td>
+                    <td class='item-update'><a href='{{ url_for('user.update_account_link', token=account['access_token']) }}'><span class='icon-help'></span></a></td>
                     <td class='item-info' id='{{ account['item_mask'] }}'><span class='icon-info'></span></td>
                     <td class='item-delete'><a href='{{ url_for('user.delete', access_token=account['access_token']) }}'>Delete</a></td>
                 </tr>

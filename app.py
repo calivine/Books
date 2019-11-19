@@ -1,5 +1,5 @@
 import os
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, render_template
 
 
 PLAID_ENV = os.getenv('PLAID_ENV', 'development')
@@ -23,7 +23,7 @@ def create_app(test_config=None):
 
     @app.route('/')
     def index():
-        return redirect(url_for('auth.login'))
+        return render_template('index.html')
 
     from database import db
     db.init_app(app)
