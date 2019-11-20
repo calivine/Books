@@ -7,16 +7,17 @@
 {% block main %}
     <div id="container">
         <table>
-            <tbody>
             {% for account in accounts %}
                 <tr class='item-row' id='{{ account['item_mask'] }}'>
                     <td>****{{ account['item_mask'] }}</td>
-                    <td class='item-update'><a href='{{ url_for('user.update_account_link', token=account['access_token']) }}'><span class='icon-help'></span></a></td>
+                    <td class='item-update'><a
+                        href='{{ url_for('user.update_account_link', token=account['access_token']) }}'><span
+                        class='icon-help'></span></a></td>
                     <td class='item-info' id='{{ account['item_mask'] }}'><span class='icon-info'></span></td>
-                    <td class='item-delete'><a href='{{ url_for('user.delete', access_token=account['access_token']) }}'>Delete</a></td>
+                    <td class='item-delete'><a
+                        href='{{ url_for('user.delete', access_token=account['access_token']) }}'>Delete</a></td>
                 </tr>
             {% endfor %}
-            </tbody>
         </table>
         <p>
             Add A New Account:
@@ -31,17 +32,17 @@
         <p class='plaid-environment' id='{{ plaid_environment }}'>Environment: {{ plaid_environment }}</p>
     </div>
     <script>
-        $(function() {
-            $('td.item-info').each(function() {
+        $(function () {
+            $('td.item-info').each(function () {
                 let mask = this.id;
                 console.log(mask);
                 // let mask = $(this).attr('id');
-                $(this).on('click', function() {
+                $(this).on('click', function () {
                     $('div#item-details-display').remove();
                     $.post('/user/update/item/accounts', {
                         item_mask: mask
-                    }, function(item) {
-                        let $item_details_display  = '<div id="item-details-display"><ul id="item-details-list"></ul></div>';
+                    }, function (item) {
+                        let $item_details_display = '<div id="item-details-display"><ul id="item-details-list"></ul></div>';
                         $('div#container').prepend($item_details_display);
                         let display_items = [
                             '<li class="item-details-list-item">' + 'ID: ' + item['item_id'] + '</li>',
@@ -51,14 +52,14 @@
                             '<li class="item-details-list-item">' + 'Account name: ' + item['account1']['name'] + '</li>',
                             '<li class="item-details-list-item">' + 'Balance: ' + item['account1']['current_balance'] + '</li>'
                         ];
-                        for (let i=0;i<display_items.length; i++) {
+                        for (let i = 0; i < display_items.length; i++) {
                             $('ul#item-details-list').append(display_items[i]);
                         }
                         let $item_details_close = '<button id="close-details" class="secondary">Ok</button>';
                         $('ul#item-details-list').after($item_details_close);
                         // $('div#item-details-display').addClass('item-details-popup');
                         console.log($item_details_display);
-                        $('button#close-details').on('click', function() {
+                        $('button#close-details').on('click', function () {
                             $('div#item-details-display').remove();
                         });
                     });

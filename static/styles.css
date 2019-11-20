@@ -2,7 +2,7 @@
     /*--form-fore-color: blue;*/
     --header-fore-color: #2660C6;
     --header-back-color: #F5F1F1;
-    --universal-margin: 10px;
+    /*--universal-margin: 10px;*/
 }
 
 @font-face {
@@ -17,17 +17,17 @@
     box-sizing: border-box;
 }
 
-html {
-    background-color: #F5F1F1;
-    font-family: 'Akkurat', sans-serif;
-}
-
 body {
     background-color: inherit;
     display: block;
     height: 100%;
-    margin: 20px 0 0 0;
+    margin: 0;
     width: 100%;
+}
+
+button#login-submit {
+    margin: 0;
+    padding: 0;
 }
 
 footer {
@@ -43,15 +43,26 @@ footer {
     line-height: 20px; /* Vertically center the text there */
 }
 
-table {
-    font-weight: 400;
-    overflow-y: scroll;
-    margin: 0 auto;
+form#login-form {
+    height: 45px;
+    margin: 3px;
+    padding: 0;
 }
 
-td>button, td>input, form {
-    display: inline-block;
-    margin: 0 auto;
+form#login-form > input, form#login-form > label {
+    height: 45px;
+    margin: 3px;
+    padding: 0;
+    font-size: 12px;
+}
+
+form#login-form > label {
+    display: inline;
+}
+
+html {
+    background-color: #F5F1F1;
+    font-family: 'Akkurat', sans-serif;
 }
 
 section {
@@ -60,7 +71,18 @@ section {
     width: 500px;
 }
 
-td.include-in-budget {
+table {
+    font-weight: 400;
+    overflow-y: scroll;
+    margin: 0 auto;
+}
+
+td > button, td > input, form {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+td.include-in-budget, td[class^="item-"] {
     max-width: 75px;
 }
 
@@ -73,31 +95,6 @@ td[class^="transaction-"], th[class^="transaction-"] {
     width: 276px;
 }
 
-td[class^="item-"] {
-    max-width: 75px;
-}
-
-#item-details-display {
-    background-color: #D3E7E9;
-    position: fixed;
-    z-index: 10;
-    margin: 0 30vw;
-    height: 30vh;
-}
-
-#close-details {
-    margin: 0 175px;
-    width: 175px;
-}
-
-#item-details-list {
-    list-style-type: none;
-}
-
-#description-edit-label {
-    display: block;
-}
-
 .description-edit-submit, .description-edit-cancel {
     margin: 0;
     width: 136px;
@@ -105,6 +102,15 @@ td[class^="item-"] {
 
 #cash_balance {
     text-align: center;
+}
+
+#close-details {
+    margin: 0 175px;
+    width: 175px;
+}
+
+#description-edit-label {
+    display: block;
 }
 
 #get-cash_balance {
@@ -116,8 +122,19 @@ td[class^="item-"] {
     margin: 0 auto;
 }
 
-#monthly_activity, #get-income, #get-spending, #get-month-balance {
-    font-size: 1.25em;
+#item-details-display {
+    background-color: #D3E7E9;
+    position: fixed;
+    z-index: 10;
+    margin: 0 30vw;
+    height: 30vh;
+}
+
+#item-details-list {
+    list-style-type: none;
 }
 
 
+#monthly_activity, #get-income, #get-spending, #get-month-balance {
+    font-size: 1.25em;
+}
