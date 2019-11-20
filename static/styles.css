@@ -75,6 +75,7 @@ table {
     font-weight: 400;
     overflow-y: scroll;
     margin: 0 auto;
+    width: 33vw;
 }
 
 td > button, td > input, form {
@@ -83,7 +84,7 @@ td > button, td > input, form {
 }
 
 td.include-in-budget, td[class^="item-"] {
-    max-width: 75px;
+    width: 75px;
 }
 
 td[class^="transaction-"], th[class^="transaction-"] {

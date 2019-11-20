@@ -32,7 +32,7 @@ def init_db():
 
 
 def seed_db():
-    from database.seeder import seed_db
+    from database.migrations import seed_db
     seed_db()
     """
     db.execute('INSERT INTO user (name, password) VALUES (?,?)', ('alexc', generate_password_hash('alex')))

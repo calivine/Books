@@ -1,7 +1,7 @@
 /venv
 /instance
 /.idea
+/database/seeders.py
+/config
 /__pycache__
 /database/__pycache__
-/config/__pycache__
-/config/__pycache__/envSettings.cpython-37.pyc

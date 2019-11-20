@@ -31,6 +31,18 @@ def items():
     """
     account_list = db.execute('SELECT * FROM item WHERE user_id = ?', (user_id,)).fetchall()
 
+    for acct in account_list:
+        try:
+            response = client.Transactions.get(acct['access_token'], start_date='2019-11-01', end_date='2019-11-18')
+        except plaid.errors.PlaidError as e:
+            print(e)
+            return render_template('user/items.html', accounts=account_list,
+                                   plaid_environment=PLAID_ENV)
+        print(response['accounts'])
+        print(response['item'])
+        for data in response['transactions']:
+            print(data)
+
     return render_template('user/items.html', accounts=account_list,
                            plaid_environment=PLAID_ENV)
 
@@ -64,7 +76,7 @@ def get_access_token():
         print(e)
         return jsonify(exchange_response)
     for account in account_list['accounts']:
-        db.execute("INSERT INTO account VALUES (?, ?, ?, ?, ?, ?, ?)", (account['account_id'], account['mask'], account['name'], account['official_name'], account['type'],account['subtype'], access_token,))
+        db.execute("INSERT INTO account VALUES (?, ?, ?, ?, ?, ?, ?)", (account['account_id'], account['mask'], account['name'], account['official_name'], account['type'], account['subtype'], access_token,))
         db.commit()
     return jsonify(exchange_response)
 
@@ -121,6 +133,7 @@ def update_account_link(token):
         response = client.Item.public_token.create(token)
     except plaid.errors.PlaidError as e:
         print(e)
+        return redirect(url_for('user.items'))
 
     public_token = response['public_token']
 
@@ -128,6 +141,21 @@ def update_account_link(token):
                            public_token=public_token,
                            plaid_environment=PLAID_ENV,
                            public_key=client.public_key)
+
+
+# ROTATE access token
+@bp.route('/rotate/access_token/<token>', methods=['GET'])
+def rotate_access_token(token):
+    access_token = get_db().execute("SELECT access_token, id FROM item WHERE item_mask = ?", (token,)).fetchone()
+    try:
+        response = client.Item.access_token.invalidate(access_token['access_token'])
+    except plaid.errors.PlaidError as e:
+        print(e)
+        return redirect(url_for('user.items'))
+    new_access_token = response['new_access_token']
+    print(new_access_token)
+    get_db().execute("UPDATE item SET access_token = ? WHERE id = ?", (new_access_token, access_token['id'],))
+    return redirect(url_for('user.items'))
 
 
 # DELETE item

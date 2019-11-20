@@ -16,6 +16,9 @@
                     <td class='item-info' id='{{ account['item_mask'] }}'><span class='icon-info'></span></td>
                     <td class='item-delete'><a
                         href='{{ url_for('user.delete', access_token=account['access_token']) }}'>Delete</a></td>
+                    <td class='item-rotate'><a href='{{ url_for('user.rotate_access_token', token=account['item_mask']) }}'>
+                        <span class='icon-user'></span></a>
+                    </td>
                 </tr>
             {% endfor %}
         </table>
