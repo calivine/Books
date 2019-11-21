@@ -10,7 +10,11 @@ bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 # VIEW home dashboard
 @bp.route('/home')
 def home():
-    return render_template('dashboard/home.html')
+    # user_id = session['user_id']
+    db = get_db()
+    transactions = db.execute("SELECT * FROM activity").fetchall()
+
+    return render_template('dashboard/home.html', transactions=transactions)
 
 
 # EDIT transaction budget

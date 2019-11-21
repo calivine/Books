@@ -18,8 +18,8 @@
     <title>{% block title %}Bookkeeper{% endblock %}</title>
 </head>
 <header>
-    <a href='{{ url_for('index') }}' class='button'>Home</a>
     {% if session.user_id %}
+        <a href='{{ url_for('index') }}' class='button'>Home</a>
         <a href='{{ url_for('user.items') }}' class='button'>Accounts</a>
         <a href='{{ url_for('auth.logout') }}' class='button'>Logout</a>
     {% else %}
@@ -28,7 +28,7 @@
             <input name='username' id='username' type='text' required>
             <label for='password'>Password</label>
             <input name='password' id='password' type='password' required>
-            <button class='btn-primary small' type='submit'>Submit</button>
+            <input class='login-submit' type='submit' value='Enter'>
         </form>
     {% endif %}
 </header>
