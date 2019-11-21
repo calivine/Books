@@ -42,7 +42,7 @@
                 // let mask = $(this).attr('id');
                 $(this).on('click', function () {
                     $('div#item-details-display').remove();
-                    $.post('/user/update/item/accounts', {
+                    $.post('/user/item/accounts/detail', {
                         item_mask: mask
                     }, function (item) {
                         let $item_details_display = '<div id="item-details-display"><ul id="item-details-list"></ul></div>';

@@ -19,7 +19,7 @@
 </head>
 <header>
     {% if session.user_id %}
-        <a href='{{ url_for('index') }}' class='button'>Home</a>
+        <a href='{{ url_for('dashboard.home') }}' class='button'>Home</a>
         <a href='{{ url_for('user.items') }}' class='button'>Accounts</a>
         <a href='{{ url_for('auth.logout') }}' class='button'>Logout</a>
     {% else %}
