@@ -45,5 +45,3 @@ def save_transactions(accounts, start_date='{:%Y-%m-%d}'.format(datetime.date.to
                     db.commit()
         except plaid.errors.PlaidError as e:
             print(e)
-
-

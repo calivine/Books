@@ -61,7 +61,7 @@ def get_access_token():
 
 # UPDATE accounts
 # Add account information associated with item
-@bp.route('/item/accounts/detail', methods=['POST'])
+@bp.route('/item/account/details', methods=['POST'])
 def get_account_details():
     item_details = None
     mask = request.form['item_mask']

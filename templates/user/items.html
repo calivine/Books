@@ -34,42 +34,8 @@
         </p>
         <p class='plaid-environment' id='{{ plaid_environment }}'>Environment: {{ plaid_environment }}</p>
     </div>
-    <script>
-        $(function () {
-            $('td.item-info').each(function () {
-                let mask = this.id;
-                console.log(mask);
-                // let mask = $(this).attr('id');
-                $(this).on('click', function () {
-                    $('div#item-details-display').remove();
-                    $.post('/user/item/accounts/detail', {
-                        item_mask: mask
-                    }, function (item) {
-                        let $item_details_display = '<div id="item-details-display"><ul id="item-details-list"></ul></div>';
-                        $('div#container').prepend($item_details_display);
-                        let display_items = [
-                            '<li class="item-details-list-item">' + 'ID: ' + item['item_id'] + '</li>',
-                            '<li class="item-details-list-item">' + 'Institution ID: ' + item['institution'] + '</li>',
-                            '<li class="item-details-list-item">' + 'Last updated: ' + item['last_update'] + '</li>',
-                            '<li class="item-details-list-item">' + 'Last failed update: ' + item['last_failed_update'] + '</li>',
-                            '<li class="item-details-list-item">' + 'Account name: ' + item['account1']['name'] + '</li>',
-                            '<li class="item-details-list-item">' + 'Balance: ' + item['account1']['current_balance'] + '</li>'
-                        ];
-                        for (let i = 0; i < display_items.length; i++) {
-                            $('ul#item-details-list').append(display_items[i]);
-                        }
-                        let $item_details_close = '<button id="close-details" class="secondary">Ok</button>';
-                        $('ul#item-details-list').after($item_details_close);
-                        // $('div#item-details-display').addClass('item-details-popup');
-                        console.log($item_details_display);
-                        $('button#close-details').on('click', function () {
-                            $('div#item-details-display').remove();
-                        });
-                    });
-                });
-            });
-        });
-    </script>
+
+    <script type='text/javascript' src='{{ url_for('static', filename='js/item-account-details.js') }}'></script>
     <script type='text/javascript' src='{{ url_for('static', filename='js/plaid-link.js') }}'></script>
 
 {% endblock %}
