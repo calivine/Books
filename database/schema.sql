@@ -2,6 +2,8 @@ DROP TABLE IF EXISTS item;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS account;
 DROP TABLE IF EXISTS activity;
+DROP TABLE IF EXISTS budget;
+
 
 CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,3 +46,12 @@ CREATE TABLE activity (
     category_name TEXT,
     sub_category TEXT
 );
+
+CREATE TABLE budget (
+    user_id INTEGER,
+    category TEXT NOT NULL,
+    planned INTEGER NOT NULL,
+    actual INTEGER NOT NULL,
+    period TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user (id)
+)

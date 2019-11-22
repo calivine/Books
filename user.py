@@ -22,7 +22,8 @@ def items():
 
     account_list = db.execute('SELECT * FROM item WHERE user_id = ?', (user_id,)).fetchall()
 
-    save_transactions(account_list)
+    for account in account_list:
+        save_transactions(account['access_token'])
 
     return render_template('user/items.html', accounts=account_list,
                            plaid_environment=PLAID_ENV)

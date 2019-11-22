@@ -7,6 +7,12 @@
 {% block main %}
     <div id="container">
         <table>
+            <tr><th>Account</th>
+                <th>Update Plaid Link</th>
+                <th>Details</th>
+                <th>Delete Item</th>
+                <th>Rotate Access Token</th>
+            </tr>
             {% for account in accounts %}
                 <tr class='item-row' id='{{ account['item_mask'] }}'>
                     <td>****{{ account['item_mask'] }}</td>

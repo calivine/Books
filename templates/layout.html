@@ -21,6 +21,7 @@
     {% if session.user_id %}
         <a href='{{ url_for('dashboard.home') }}' class='button'>Home</a>
         <a href='{{ url_for('user.items') }}' class='button'>Accounts</a>
+        <a href='{{ url_for('budget.budget') }}' class='button'>Budget</a>
         <a href='{{ url_for('auth.logout') }}' class='button'>Logout</a>
     {% else %}
         <form id='login-form' action='{{ url_for('auth.login') }}' method='post'>

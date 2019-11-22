@@ -52,10 +52,7 @@ form#login-form > input, form#login-form > label {
     margin: 3px;
     padding: 0;
     font-size: 14px;
-}
-
-form#login-form > label {
-    display: inline;
+    vertical-align: center;
 }
 
 header {

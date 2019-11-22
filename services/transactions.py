@@ -5,8 +5,7 @@ from app import client
 from plaid.errors import APIError
 
 
-def save_transactions(accounts, start_date='{:%Y-%m-%d}'.format(datetime.date.today() - datetime.timedelta(days=2)),
-                      end_date='{:%Y-%m-%d}'.format(datetime.date.today())):
+def save_transactions(access_token, start_date='{:%Y-%m-%d}'.format(datetime.date.today() - datetime.timedelta(days=2)), end_date='{:%Y-%m-%d}'.format(datetime.date.today())):
     db = get_db()
     start = start_date
     end = end_date
@@ -19,29 +18,54 @@ def save_transactions(accounts, start_date='{:%Y-%m-%d}'.format(datetime.date.to
         existing.append(check['transaction_id'])
     if len(check_response) is None:
         print("empty")
-    for account in accounts:
-        try:
-            transaction_details = client.Transactions.get(account['access_token'], start_date=start, end_date=end)
-            # print(response['accounts'])
-            # print(response['item'])
-            for data in transaction_details['transactions']:
-                if data['transaction_id'] not in existing:
-                    params = (data['account_id'],
-                              data['amount'],
-                              str(data['category']),
-                              data['category_id'],
-                              data['date'],
-                              data['iso_currency_code'],
-                              data['name'],
-                              data['pending'],
-                              data['pending_transaction_id'],
-                              data['transaction_id'],
-                              data['transaction_type'],
-                              'true',
-                              'na',  # data['category_type'],
-                              'na',  # data['category_name'],
-                              'na',)  # data['sub_category'])
-                    db.execute("INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params)
-                    db.commit()
-        except plaid.errors.PlaidError as e:
-            print(e)
+    try:
+        transaction_details = client.Transactions.get(access_token, start_date=start, end_date=end)
+        # print(response['accounts'])
+        # print(response['item'])
+        transactions = format_category(transaction_details['transactions'])
+        for data in transactions:
+            if data['transaction_id'] not in existing:
+                params = (data['account_id'],
+                          data['amount'],
+                          str(data['category']),
+                          data['category_id'],
+                          data['date'],
+                          data['iso_currency_code'],
+                          data['name'],
+                          data['pending'],
+                          data['pending_transaction_id'],
+                          data['transaction_id'],
+                          data['transaction_type'],
+                          'true',
+                          data['category_type'],
+                          data['category_name'],
+                          data['sub_category'])
+                db.execute("INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params)
+                db.commit()
+    except plaid.errors.PlaidError as e:
+        print(e)
+
+
+# Separate out category terms
+def format_category(accounts):
+    # Cycle through each transaction in category
+    # Break out each term into one of three columns
+    for line in accounts:
+        if line['category'] is not None:
+            if len(line['category']) == 3:
+                line['category_type'] = line['category'][0]
+                line['category_name'] = line['category'][1]
+                line['sub_category'] = line['category'][2]
+            elif len(line['category']) == 2:
+                line['category_type'] = line['category'][0]
+                line['category_name'] = line['category'][1]
+                line['sub_category'] = ""
+            else:
+                line['category_type'] = line['category'][0]
+                line['category_name'] = ""
+                line['sub_category'] = ""
+        else:
+            line['category_type'] = ""
+            line['category_name'] = ""
+            line['sub_category'] = ""
+    return accounts
