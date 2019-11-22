@@ -14,7 +14,7 @@ def budget():
     # Get current month and year and add as parameter for getting budget data
     budget = get_db().execute("SELECT * FROM budget WHERE user_id = ?", (user_id,)).fetchall()
     for item in budget:
-        print(item['name'])
+        print(item['category'])
 
     return render_template('budget/index.html')
 
