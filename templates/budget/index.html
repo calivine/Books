@@ -6,18 +6,56 @@
 
 
 {% block main %}
-
+    {{ budget_sheet[0]['period'] }}
     <table>
         <thead>
-            <tr>
-                <td></td>
-                <td>Planned</td>
-                <td>Actual</td>
-                <td>Difference</td>
-            </tr>
+        <tr>
+            <th></th>
+            <th>Planned</th>
+            <th>Actual</th>
+            <th>Difference</th>
+        </tr>
         </thead>
         <tbody>
+        {% for category in budget_sheet %}
+            <tr class='budget-category'>
+                <td class='budget-category-name'>{{ category['category'] }}</td>
+                <td class='budget-category-planned'>{{ category['planned'] }}</td>
+                <td>{{ category['actual'] }}</td>
+                <td>{{ category['planned'] - category['actual'] }}</td>
+            </tr>
+        {% endfor %}
 
         </tbody>
     </table>
+
+    <script>
+        $(function () {
+            $('.budget-category-planned').each(function () {
+                $(this).on('click', function () {
+                    let currentValue = initializeInput($(this).text());
+                    let inputAnchor = $(this).prev();
+                    inputAnchor.after(currentValue);
+                    $(this).remove();
+                })
+            });
+        });
+
+        $(function () {
+            $('button#budget-update-submit').each(function () {
+                $(this).on('click', function () {
+                    $.getJSON('/budget/update', {
+                        current_value: $('input.update-input').attr('value'),
+                    }, function (data) {
+
+                    });
+                    return false;
+                })
+            })
+        });
+
+        const initializeInput = (value) => {
+            return '<td class="budget-update-form"><input type="text" class="update-input" name="budget_update" placeholder=' + value + '><button class="btn-primary budget-update" id="budget-update-submit">Save</button><button class="btn-secondary" id="budget-update-cancel">Cancel</button></td>';
+        }
+    </script>
 {% endblock %}

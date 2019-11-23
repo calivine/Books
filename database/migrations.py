@@ -31,11 +31,11 @@ def seed_db():
                     account['access_token'],))
         db.commit()
 
-    db.execute("INSERT INTO budget (user_id, category, planned, actual, period)" 
-               "VALUES (?, ?, ?, ?, ?)", (budget['user_id'],
-                                             budget['category'],
-                                             budget['planned'],
-                                             budget['actual'],
-                                             budget['period'],))
-    db.commit()
-
+    for sheet in budget:
+        db.execute("INSERT INTO budget (user_id, category, planned, actual, period)"
+                   "VALUES (?, ?, ?, ?, ?)", (sheet['user_id'],
+                                              sheet['category'],
+                                              sheet['planned'],
+                                              sheet['actual'],
+                                              sheet['period'],))
+        db.commit()

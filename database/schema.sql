@@ -54,4 +54,4 @@ CREATE TABLE budget (
     actual INTEGER NOT NULL,
     period TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user (id)
-)
+);
