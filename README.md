@@ -1,4 +1,4 @@
-# Books Financial Planner (v1.1.6): 
+# Books Financial Planner (v1.1.7): 
 ## Monthly budget planning, income & expense tracking
 
 #### Includes:
