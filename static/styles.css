@@ -2,7 +2,7 @@
     /*--form-fore-color: blue;*/
     --header-fore-color: #2660C6;
     --header-back-color: #F5F1F1;
-    /*--universal-margin: 10px;*/
+    --universal-margin: 10px;
     --universal-padding: 5px;
 }
 
@@ -41,18 +41,10 @@ footer {
 
 form#login-form {
     border: none;
-    height: 45px;
-    margin: 0;
-    padding: 3px;
-    text-align: center;
-}
-
-form#login-form > input, form#login-form > label {
     height: 25px;
     margin: 3px;
     padding: 0;
-    font-size: 14px;
-    vertical-align: center;
+    font-size: .75rem;
 }
 
 header {
@@ -62,6 +54,18 @@ header {
 html {
     background-color: #F5F1F1;
     font-family: 'Akkurat', sans-serif;
+}
+
+input#login-submit {
+    background-color: #b9e4e3;
+    color: #444444;
+    height: 28px;
+    margin-bottom: 10px;
+    padding: 6px;
+    text-shadow: 0 1px 1px #ffffff;
+    text-align: center;
+    vertical-align: middle;
+
 }
 
 section {
@@ -98,13 +102,6 @@ td[class^="transaction-"], th[class^="transaction-"] {
 .description-edit-submit, .description-edit-cancel {
     margin: 0;
     width: 136px;
-}
-
-.login-submit {
-    height: 25px;
-    font-size: 14px;
-    margin: 3px;
-    padding: 3px;
 }
 
 #cash_balance {

@@ -23,7 +23,11 @@ def budget():
 
 @bp.route('/update')
 def update_budget():
+    user_id = session['user_id']
     current_value = request.args.get('current_value')
+    budget_period = request.args.get('budget_period')
+    
+
 
 
 

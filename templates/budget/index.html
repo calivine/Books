@@ -6,7 +6,7 @@
 
 
 {% block main %}
-    {{ budget_sheet[0]['period'] }}
+    <h3 id='budget-period'>{{ budget_sheet[0]['period'] }}</h3>
     <table>
         <thead>
         <tr>
@@ -46,6 +46,7 @@
                 $(this).on('click', function () {
                     $.getJSON('/budget/update', {
                         current_value: $('input.update-input').attr('value'),
+                        budget_period: $('h3#budget-period').text(),
                     }, function (data) {
 
                     });
