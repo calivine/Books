@@ -10,7 +10,7 @@
     <table>
         <thead>
         <tr>
-            <th></th>
+            <th>Category</th>
             <th>Planned</th>
             <th>Actual</th>
             <th>Difference</th>
@@ -25,38 +25,83 @@
                 <td>{{ category['planned'] - category['actual'] }}</td>
             </tr>
         {% endfor %}
+        <tr id='budget-totals'>
+            <td id='planned-total-label'>Total: </td>
+            <td id='planned-total'></td>
+        </tr>
 
         </tbody>
     </table>
+    <p id='add-new-category'>Add new category</p>
 
     <script>
         $(function () {
+            getPlannedTotal();
             $('.budget-category-planned').each(function () {
                 $(this).on('click', function () {
+                    const currentValueText = $(this).text();
                     let currentValue = initializeInput($(this).text());
                     let inputAnchor = $(this).prev();
                     inputAnchor.after(currentValue);
-                    $(this).remove();
-                })
+                    $(this).hide();
+                    $(function () {
+                        $('button#budget-update-submit').each(function () {
+                            $(this).on('click', function () {
+                                let $updateForm = $(this).parent();
+                                let $hiddenPlannedValue = $(this).parent().next();
+                                $.post('/budget/update', {
+                                    new_value: $('input.update-input').val(),
+                                    budget_period: $('h3#budget-period').text(),
+                                    category: $(this).parent().prev().text()
+                                }, function (data) {
+                                    $hiddenPlannedValue.text(data);
+                                    // Insert update planned budget value
+                                    $updateForm.fadeOut();
+                                    $hiddenPlannedValue.fadeIn();
+                                    // Remove update form
+                                    $updateForm.remove();
+                                    getPlannedTotal();
+                                });
+                                return false;
+                            });
+                        });
+                        $('button#budget-update-cancel').each(function () {
+                            $(this).on('click', function () {
+                                let $anchor = $(this).parent().next();
+                                let $updateForm = $(this).parent();
+                                console.log(currentValueText);
+                                $updateForm.fadeOut();
+                                $anchor.fadeIn();
+                                $updateForm.remove();
+                            });
+                        });
+                    });
+
+                });
             });
         });
 
-        $(function () {
-            $('button#budget-update-submit').each(function () {
-                $(this).on('click', function () {
-                    $.getJSON('/budget/update', {
-                        current_value: $('input.update-input').attr('value'),
-                        budget_period: $('h3#budget-period').text(),
-                    }, function (data) {
+        const getPlannedTotal = () => {
+            let plannedTotal = 0;
+            $('td.budget-category-planned').each(function () {
+                plannedTotal += Number($(this).text());
+            });
+            $('td#planned-total').text(plannedTotal);
+        };
 
+        /*
+                $(function() {
+                    $('p#add-new-category').on('click', function() {
+                       let newCategoryForm = '<form action="#" method="post"></form>';
+                       let categoryNameInput = '<label for="category">Category</label><input name="category" type="text" required>';
                     });
-                    return false;
-                })
-            })
-        });
+
+                }); */
+
 
         const initializeInput = (value) => {
-            return '<td class="budget-update-form"><input type="text" class="update-input" name="budget_update" placeholder=' + value + '><button class="btn-primary budget-update" id="budget-update-submit">Save</button><button class="btn-secondary" id="budget-update-cancel">Cancel</button></td>';
-        }
+            return '<td class="budget-update-form"><input type="text" class="update-input" name="budget_update" value=' + value + '><button class="btn-primary budget-update" id="budget-update-submit">Save</button><button class="btn-secondary" id="budget-update-cancel">Cancel</button></td>';
+        };
+
     </script>
 {% endblock %}

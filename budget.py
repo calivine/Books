@@ -1,6 +1,6 @@
 from database.db import get_db
 from datetime import datetime
-from flask import Blueprint, render_template, session, request
+from flask import Blueprint, render_template, session, request, jsonify
 from config.envSettings import month_strings
 
 bp = Blueprint('budget', __name__, url_prefix='/budget')
@@ -21,11 +21,20 @@ def budget():
     return render_template('budget/index.html', budget_sheet=monthly_budget)
 
 
-@bp.route('/update')
+@bp.route('/update', methods=['POST'])
 def update_budget():
     user_id = session['user_id']
-    current_value = request.args.get('current_value')
-    budget_period = request.args.get('budget_period')
+    new_value = request.form['new_value']
+    budget_period = request.form['budget_period']
+    category = request.form['category']
+    print(category)
+
+    db = get_db()
+    db.execute("UPDATE budget SET planned = ? WHERE user_id = ? AND period = ? AND category = ?", (new_value, user_id, budget_period, category, ))
+    db.commit()
+
+    return jsonify(new_value)
+
     
 
 
