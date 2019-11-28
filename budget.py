@@ -1,6 +1,6 @@
 from database.db import get_db
 from datetime import datetime
-from flask import Blueprint, render_template, session, request, jsonify
+from flask import Blueprint, render_template, session, request, jsonify, redirect, url_for
 from config.envSettings import month_strings
 
 bp = Blueprint('budget', __name__, url_prefix='/budget')
@@ -34,6 +34,22 @@ def update_budget():
     db.commit()
 
     return jsonify(new_value)
+
+
+@bp.route('/new/category', methods=['POST'])
+def create_new_category():
+    user_id = session['user_id']
+    # Get new category name and budget
+    new_category = request.form['name']
+    planned_budget = request.form['planned']
+    budget_period = '-'.join((month_strings[datetime.now().month - 1], str(datetime.now().year)))
+    try:
+        db = get_db()
+        db.execute('INSERT INTO budget (user_id, category, planned, actual, period) VALUES (?,?,?,?,?)', (user_id, new_category, planned_budget, 0, budget_period,))
+        db.commit()
+    except Exception as e:
+        print(e)
+    return redirect(url_for('budget.budget'))
 
     
 

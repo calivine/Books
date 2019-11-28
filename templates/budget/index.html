@@ -26,7 +26,7 @@
             </tr>
         {% endfor %}
         <tr id='budget-totals'>
-            <td id='planned-total-label'>Total: </td>
+            <td id='planned-total-label'>Total:</td>
             <td id='planned-total'></td>
         </tr>
 
@@ -36,17 +36,22 @@
 
     <script>
         $(function () {
-            getPlannedTotal();
+            let worker = new BudgetWorker;
+            worker.getPlannedTotal();
             $('.budget-category-planned').each(function () {
                 $(this).on('click', function () {
                     const currentValueText = $(this).text();
-                    let currentValue = initializeInput($(this).text());
+                    // let currentValue = initializeInput($(this).text());
+                    let currentValue = worker.budgetUpdateInput($(this).text());
                     let inputAnchor = $(this).prev();
                     inputAnchor.after(currentValue);
                     $(this).hide();
                     $(function () {
                         $('button#budget-update-submit').each(function () {
                             $(this).on('click', function () {
+                                worker.updateBudget($(this));
+                                worker.getPlannedTotal();
+                                /*
                                 let $updateForm = $(this).parent();
                                 let $hiddenPlannedValue = $(this).parent().next();
                                 $.post('/budget/update', {
@@ -60,27 +65,41 @@
                                     $hiddenPlannedValue.fadeIn();
                                     // Remove update form
                                     $updateForm.remove();
-                                    getPlannedTotal();
+                                    BudgetWorker.getPlannedTotal();
                                 });
                                 return false;
+                                */
                             });
                         });
                         $('button#budget-update-cancel').each(function () {
                             $(this).on('click', function () {
-                                let $anchor = $(this).parent().next();
-                                let $updateForm = $(this).parent();
-                                console.log(currentValueText);
-                                $updateForm.fadeOut();
-                                $anchor.fadeIn();
-                                $updateForm.remove();
+                                worker.cancelUpdate($(this));
                             });
                         });
                     });
 
                 });
             });
-        });
+            $(function () {
+                $('p#add-new-category').on('click', function () {
+                    let newCategoryForm = worker.createNewCategoryForm($(this));
+                    /*
+                    let newCategoryForm = $('<form action="#" method="post"></form>');
+                    let categoryNameInput = '<label for="category">Category</label><input name="category" type="text" required>';
+                    let plannedBudget = '<label for="planned">Planned Budget</label><input name"planned" type="text"><button id="category-submit" type="submit">Save</button>';
+                    newCategoryForm.append(categoryNameInput);
+                    newCategoryForm.append(plannedBudget);
+                    $(this).after(newCategoryForm);
+                    */
+                    console.log(newCategoryForm.next());
+                    $('button#category-submit').on('click', function () {
 
+                    })
+                });
+
+            });
+        });
+        /*
         const getPlannedTotal = () => {
             let plannedTotal = 0;
             $('td.budget-category-planned').each(function () {
@@ -90,18 +109,15 @@
         };
 
         /*
-                $(function() {
-                    $('p#add-new-category').on('click', function() {
-                       let newCategoryForm = '<form action="#" method="post"></form>';
-                       let categoryNameInput = '<label for="category">Category</label><input name="category" type="text" required>';
-                    });
 
-                }); */
 
 
         const initializeInput = (value) => {
             return '<td class="budget-update-form"><input type="text" class="update-input" name="budget_update" value=' + value + '><button class="btn-primary budget-update" id="budget-update-submit">Save</button><button class="btn-secondary" id="budget-update-cancel">Cancel</button></td>';
         };
+        */
 
     </script>
+
+    <script type='text/javascript' src='{{ url_for('static', filename='js/BudgetWorker.js') }}'></script>
 {% endblock %}
