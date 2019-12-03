@@ -130,6 +130,12 @@ th {
     width: 136px;
 }
 
+.item-delete-buttons {
+    margin: 25px;
+    width: 50px;
+    padding: 15px;
+}
+
 .new-category-form-input {
     display: block;
 }

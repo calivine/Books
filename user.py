@@ -138,6 +138,12 @@ def rotate_access_token(token):
 # DELETE item
 @bp.route('/delete/<access_token>', methods=['GET'])
 def delete(access_token):
+    return render_template('user/delete.html', access_token=access_token)
+
+
+# DESTROY item
+@bp.route('/destroy/<access_token>', methods=['GET'])
+def destroy(access_token):
     db = get_db()
     try:
         response = client.Item.remove(access_token)

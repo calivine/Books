@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Delete Item
+{% endblock %}
+
+{% block main %}
+    <h2>Item Delete</h2>
+    <p>Are you sure you want to delete this item?</p>
+    <span>
+        <a class='item-delete-buttons' href='{{ url_for('user.destroy', access_token=access_token['access_token']) }}'>Yes</a>
+        <a class='item-delete-buttons' href='{{ url_for('user.items') }}'>Cancel</a>
+    </span>
+
+
+
+{% endblock %}
