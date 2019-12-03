@@ -10,7 +10,7 @@ function BudgetWorker() {
         $('td#planned-total').text(plannedTotal);
     };
 
-    this.updateBudget = function (t) {
+    this.updateBudget = function (t, self) {
         let updateForm = t.parent();
         let hiddenPlannedValue = t.parent().next();
         $.post('/budget/update', {
@@ -19,16 +19,18 @@ function BudgetWorker() {
             category: t.parent().prev().text()
         }, function (data) {
             hiddenPlannedValue.text(data);
+            console.log(hiddenPlannedValue);
             // Insert update planned budget value
             updateForm.fadeOut();
             hiddenPlannedValue.fadeIn();
             // Remove update form
             updateForm.remove();
+            self.getPlannedTotal();
         });
         return false;
     };
 
-    this.cancelUpdate = function (t) {
+    this.cancel = function (t) {
         this.anchor = t.parent().next();
         this.updateForm = t.parent();
         this.updateForm.fadeOut();
@@ -41,12 +43,12 @@ function BudgetWorker() {
     };
 
     this.createNewCategoryForm = function (t) {
-        this.newCategoryForm = $('<form action="#" method="post"></form>');
-        this.categoryNameInput = '<label for="category">Category</label><input id="new-category-input" name="category" type="text" required>';
-        this.plannedBudget = '<label for="planned">Planned Budget</label><input id="new-planned-input" name"planned" type="text"><button id="categorySubmit" type="submit">Save</button>';
+        this.newCategoryForm = $('<div id="new-category-form"></div>');
+        this.categoryNameInput = '<label for="category">Category</label><input id="new-category-input" class="new-category-form-input" name="category" type="text" required>';
+        this.plannedBudget = '<label for="planned">Planned Budget</label><input id="new-planned-input" class="new-category-form-input" name=planned" type="text"><button id="category-submit" type="submit">Save</button><button id="category-cancel" type="button">Cancel</button>';
         this.newCategoryForm.append(this.categoryNameInput);
         this.newCategoryForm.append(this.plannedBudget);
-        return t.after(this.newCategoryForm);
+        return t.before(this.newCategoryForm);
     };
 
     this.saveNewCategory = function (t) {
@@ -55,6 +57,16 @@ function BudgetWorker() {
             planned: $('input#new-planned-input').val()
 
         }, function (data) {
+            // Insert new category line after last category row already in table
+            // .prepend() on <tr id='budget-totals'>
+            let newRow = $('<tr class="budget-category"></tr>');
+            let newCategoryName = '<td class="budget-category-name">' + data['category'] + '</td>';
+            let newCategoryPlanned = '<td class="budget-category-planned">' + data['planned'] + '</td><td>0</td><td>' + data['planned'] + '</td>';
+            newRow.append(newCategoryName, newCategoryPlanned);
+            console.log(newRow);
+            $('tr#budget-totals').before(newRow);
+            $('div#new-category-form').remove();
+            $('span#add-new-category').fadeIn();
 
         });
         return false;

@@ -7,6 +7,7 @@
 
 {% block main %}
     <h3 id='budget-period'>{{ budget_sheet[0]['period'] }}</h3>
+    <span id='add-new-category'><i class="fas fa-plus"></i> Add New Category</span>
     <table>
         <thead>
         <tr>
@@ -20,9 +21,9 @@
         {% for category in budget_sheet %}
             <tr class='budget-category'>
                 <td class='budget-category-name'>{{ category['category'] }}</td>
-                <td class='budget-category-planned'>{{ category['planned'] }}</td>
-                <td>{{ category['actual'] }}</td>
-                <td>{{ category['planned'] - category['actual'] }}</td>
+                <td class='budget-category-planned'>${{ category['planned'] }}</td>
+                <td>${{ category['actual'] }}</td>
+                <td>${{ category['planned'] - category['actual'] }}</td>
             </tr>
         {% endfor %}
         <tr id='budget-totals'>
@@ -32,12 +33,13 @@
 
         </tbody>
     </table>
-    <p id='add-new-category'>Add new category</p>
 
     <script>
         $(function () {
             let worker = new BudgetWorker;
+            // Tally total 'planned' budget
             worker.getPlannedTotal();
+            // User can update planned value by clicking on the value itself
             $('.budget-category-planned').each(function () {
                 $(this).on('click', function () {
                     const currentValueText = $(this).text();
@@ -49,8 +51,8 @@
                     $(function () {
                         $('button#budget-update-submit').each(function () {
                             $(this).on('click', function () {
-                                worker.updateBudget($(this));
-                                worker.getPlannedTotal();
+                                worker.updateBudget($(this), worker);
+                                // worker.getPlannedTotal();
                                 /*
                                 let $updateForm = $(this).parent();
                                 let $hiddenPlannedValue = $(this).parent().next();
@@ -73,7 +75,7 @@
                         });
                         $('button#budget-update-cancel').each(function () {
                             $(this).on('click', function () {
-                                worker.cancelUpdate($(this));
+                                worker.cancel($(this));
                             });
                         });
                     });
@@ -81,8 +83,10 @@
                 });
             });
             $(function () {
-                $('p#add-new-category').on('click', function () {
+                $('span#add-new-category').on('click', function () {
+                    $(this).hide();
                     let newCategoryForm = worker.createNewCategoryForm($(this));
+
                     /*
                     let newCategoryForm = $('<form action="#" method="post"></form>');
                     let categoryNameInput = '<label for="category">Category</label><input name="category" type="text" required>';
@@ -93,8 +97,13 @@
                     */
                     console.log(newCategoryForm.next());
                     $('button#category-submit').on('click', function () {
-
-                    })
+                        worker.saveNewCategory($(this));
+                    });
+                    $('button#category-cancel').each(function () {
+                        $(this).on('click', function () {
+                            worker.cancel($(this));
+                        });
+                    });
                 });
 
             });

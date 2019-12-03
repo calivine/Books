@@ -8,33 +8,39 @@ bp = Blueprint('budget', __name__, url_prefix='/budget')
 
 @bp.route('/', methods=['GET'])
 def budget():
+    db = get_db()
     user_id = session['user_id']
     print(datetime.now().month, datetime.now().year)
-
     print(month_strings[datetime.now().month - 1])
     budget_period = '-'.join((month_strings[datetime.now().month - 1], str(datetime.now().year)))
     print(budget_period)
     # Get current month and year and add as parameter for getting budget data
-    monthly_budget = get_db().execute("SELECT * FROM budget WHERE user_id = ? AND period = ?", (user_id, budget_period,)).fetchall()
-    print(monthly_budget)
+    monthly_budget = db.execute("SELECT * FROM budget WHERE user_id = ? AND period = ?", (user_id, budget_period,)).fetchall()
     if len(monthly_budget) == 0:
-        print("Budget doesn't exist")
         # previous budget period
-        budget_period = '-'.join((month_strings[datetime.now().month - 2], str(datetime.now().year)))
-        new_budget_sheet = get_db().execute("SELECT * FROM budget WHERE user_id = ? AND period = ?", (user_id, budget_period,)).fetchall()
+        prev_budget_period = '-'.join((month_strings[datetime.now().month - 2], str(datetime.now().year)))
+        new_budget_sheet = db.execute("SELECT * FROM budget WHERE user_id = ? AND period = ?", (user_id, prev_budget_period,)).fetchall()
         monthly_budget = []
 
         for item in new_budget_sheet:
             budget_item = {
                 'user_id': user_id,
-                'category': item['category']
+                'category': item['category'],
+                'planned': item['planned'],
+                'actual': 0,
+                'period': budget_period
             }
-            print(item)
-        # Function to create, save, and return new budget sheet.
-        return redirect(url_for('dashboard.home'))
+            monthly_budget.append(budget_item)
+            db.execute("INSERT INTO budget (user_id, category, planned, actual, period)"
+                       "VALUES (?, ?, ?, ?, ?)", (budget_item['user_id'],
+                                                  budget_item['category'],
+                                                  budget_item['planned'],
+                                                  budget_item['actual'],
+                                                  budget_item['period'],))
+            db.commit()
+
     for item in monthly_budget:
         print(item['category'])
-
     return render_template('budget/index.html', budget_sheet=monthly_budget)
 
 
@@ -66,7 +72,7 @@ def create_new_category():
         db.commit()
     except Exception as e:
         print(e)
-    return redirect(url_for('budget.budget'))
+    return jsonify(category=new_category, planned=planned_budget)
 
     
 

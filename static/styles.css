@@ -130,6 +130,18 @@ th {
     width: 136px;
 }
 
+.new-category-form-input {
+    display: block;
+}
+
+#add-new-category {
+    margin-left: 58px;
+}
+
+#add-new-category:hover {
+    cursor: pointer;
+}
+
 #budget-totals {
     border-top: 2px solid #000000;
 }
@@ -171,6 +183,10 @@ th {
 
 #monthly_activity, #get-income, #get-spending, #get-month-balance {
     font-size: 1.25em;
+}
+
+#new-category-form {
+    margin-left: 58px;
 }
 
 #planned-total-label {
