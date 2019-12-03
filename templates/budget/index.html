@@ -21,9 +21,9 @@
         {% for category in budget_sheet %}
             <tr class='budget-category'>
                 <td class='budget-category-name'>{{ category['category'] }}</td>
-                <td class='budget-category-planned'>${{ category['planned'] }}</td>
-                <td>${{ category['actual'] }}</td>
-                <td>${{ category['planned'] - category['actual'] }}</td>
+                <td class='budget-category-planned'>{{ category['planned'] }}</td>
+                <td>{{ category['actual'] }}</td>
+                <td>{{ category['planned'] - category['actual'] }}</td>
             </tr>
         {% endfor %}
         <tr id='budget-totals'>
