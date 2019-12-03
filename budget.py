@@ -10,11 +10,28 @@ bp = Blueprint('budget', __name__, url_prefix='/budget')
 def budget():
     user_id = session['user_id']
     print(datetime.now().month, datetime.now().year)
+
     print(month_strings[datetime.now().month - 1])
     budget_period = '-'.join((month_strings[datetime.now().month - 1], str(datetime.now().year)))
     print(budget_period)
     # Get current month and year and add as parameter for getting budget data
     monthly_budget = get_db().execute("SELECT * FROM budget WHERE user_id = ? AND period = ?", (user_id, budget_period,)).fetchall()
+    print(monthly_budget)
+    if len(monthly_budget) == 0:
+        print("Budget doesn't exist")
+        # previous budget period
+        budget_period = '-'.join((month_strings[datetime.now().month - 2], str(datetime.now().year)))
+        new_budget_sheet = get_db().execute("SELECT * FROM budget WHERE user_id = ? AND period = ?", (user_id, budget_period,)).fetchall()
+        monthly_budget = []
+
+        for item in new_budget_sheet:
+            budget_item = {
+                'user_id': user_id,
+                'category': item['category']
+            }
+            print(item)
+        # Function to create, save, and return new budget sheet.
+        return redirect(url_for('dashboard.home'))
     for item in monthly_budget:
         print(item['category'])
 
