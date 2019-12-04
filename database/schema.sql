@@ -16,6 +16,7 @@ CREATE TABLE item (
     access_token TEXT,
     id TEXT,
     item_mask TEXT,
+    institution TEXT,
     FOREIGN KEY (user_id) REFERENCES user (id)
 );
 

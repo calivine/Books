@@ -12,11 +12,12 @@ def seed_db():
     db.commit()
 
     for item in items:
-        db.execute("INSERT INTO item (user_id, access_token, id, item_mask) "
-                   "VALUES (?, ?, ?, ?)", (item['user_id'],
+        db.execute("INSERT INTO item (user_id, access_token, id, item_mask, institution) "
+                   "VALUES (?, ?, ?, ?, ?)", (item['user_id'],
                                            item['access_token'],
                                            item['id'],
-                                           item['item_mask'],))
+                                           item['item_mask'],
+                                           item['institution'],))
         db.commit()
 
     for account in accounts:

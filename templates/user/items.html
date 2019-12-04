@@ -6,6 +6,12 @@
 
 {% block main %}
     <div id="container">
+        <div id='add-account'>
+            <p>
+                Add A New Account:
+            </p>
+            <button id="link-btn">Add</button>
+        </div>
         <table>
             <tr><th>Account</th>
                 <th>Update Plaid Link</th>
@@ -17,21 +23,16 @@
                 <tr class='item-row' id='{{ account['item_mask'] }}'>
                     <td>****{{ account['item_mask'] }}</td>
                     <td class='item-update'><a
-                        href='{{ url_for('user.update_account_link', token=account['access_token']) }}'><span
-                        class='icon-help'></span></a></td>
-                    <td class='item-info' id='{{ account['item_mask'] }}'><span class='icon-info'></span></td>
+                        href='{{ url_for('user.update_account_link', token=account['access_token']) }}'><i id='wrench-icon' class="fas fa-key"></i></a></td>
+                    <td class='item-info' id='{{ account['item_mask'] }}'><i class="fas fa-info-circle"></i></td>
                     <td class='item-delete'><a
                         href='{{ url_for('user.delete', access_token=account['access_token']) }}'>Delete</a></td>
-                    <td class='tooltip-bottom item-rotate' aria-label='Rotate Access Token'><a href='{{ url_for('user.rotate_access_token', token=account['item_mask']) }}'>
-                        <span class='icon-user'></span></a>
+                    <td class='tooltip-bottom item-rotate' aria-label='Rotate Access Token'><a href='{{ url_for('user.rotate', token=account['item_mask']) }}'>
+                        <i id='redo-alt-icon' class="fas fa-redo-alt"></i></a>
                     </td>
                 </tr>
             {% endfor %}
         </table>
-        <p>
-            Add A New Account:
-        </p>
-        <button id="link-btn">Add</button>
     </div>
     <div id="success">
         <p>

@@ -6,7 +6,7 @@ from flask import Blueprint, redirect, render_template, request, session, url_fo
 from database.db import get_db
 from app import client
 from services.transactions import save_transactions
-from services.plaidHelpers import initialize_new_item, create_mask
+from services.plaidHelpers import save_item_accounts, create_mask
 
 PLAID_ENV = os.getenv('PLAID_ENV', 'development')
 
@@ -53,9 +53,13 @@ def get_access_token():
     print(item_mask)
     print(access_token)
     print(item_id)
-    db.execute("INSERT INTO item VALUES (?, ?, ?, ?)", (session['user_id'], access_token, item_id, item_mask,))
+    response = client.Item.get(access_token)
+    inst_id = response['item']['institution_id']
+    response = client.Institutions.get_by_id(inst_id)
+    inst_name = response['institution']['name']
+    db.execute("INSERT INTO item VALUES (?, ?, ?, ?, ?)", (session['user_id'], access_token, item_id, item_mask, inst_name,))
     db.commit()
-    initialize_new_item(access_token)
+    save_item_accounts(access_token)
 
     return jsonify(exchange_response)
 
@@ -118,6 +122,11 @@ def update_account_link(token):
                            plaid_environment=PLAID_ENV,
                            public_key=client.public_key)
 
+
+# GET ROTATE
+@bp.route('/rotate/<token>', methods=['GET'])
+def rotate(token):
+    return render_template('user/rotate.html', token=token)
 
 # ROTATE access token
 @bp.route('/rotate/access_token/<token>', methods=['GET'])

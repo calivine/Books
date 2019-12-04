@@ -7,7 +7,7 @@ from services.transactions import save_transactions
 
 
 # CREATE account and transaction records for a newly created Item
-def initialize_new_item(access_token):
+def save_item_accounts(access_token):
     db = get_db()
     try:
         account_list = client.Accounts.get(access_token)

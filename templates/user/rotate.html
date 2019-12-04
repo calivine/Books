@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Rotate Item
+{% endblock %}
+
+{% block main %}
+    <h2>Rotate access token</h2>
+    <p>Are you sure you want to rotate this item?</p>
+    <span>
+        <a class='item-rotate-buttons' href='{{ url_for('user.rotate_access_token', token=token['token']) }}'>Yes</a>
+        <a class='item-rotate-buttons' href='{{ url_for('user.items') }}'>Cancel</a>
+    </span>
+
+
+
+{% endblock %}

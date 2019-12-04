@@ -60,10 +60,6 @@ input#login-submit {
 
 }
 
-input.update-input {
-    width: 130px;
-}
-
 nav li {
     display: inline;
     list-style-type: none;
@@ -120,6 +116,21 @@ th {
     text-align: left;
 }
 
+.button-container, .update-input {
+    display: block;
+    margin: 0;
+    max-width: 130px;
+}
+
+.budget-update-button {
+    width: 65px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 30px;
+}
+
 .description-edit-input {
     margin: 0;
     width: 276px;
@@ -136,12 +147,20 @@ th {
     padding: 15px;
 }
 
+.fas .fa-key {
+    color: #000000;
+}
+
 .new-category-form-input {
     display: block;
 }
 
+#wrench-icon, #redo-alt-icon {
+    color: #000000;
+}
+
 #add-new-category {
-    margin-left: 58px;
+    margin-left: 6vw;
 }
 
 #add-new-category:hover {

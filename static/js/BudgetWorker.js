@@ -11,12 +11,12 @@ function BudgetWorker() {
     };
 
     this.updateBudget = function (t, self) {
-        let updateForm = t.parent();
-        let hiddenPlannedValue = t.parent().next();
+        let updateForm = t.parent().parent();
+        let hiddenPlannedValue = t.parent().parent().next();
         $.post('/budget/update', {
             new_value: $('input.update-input').val(),
             budget_period: $('h3#budget-period').text(),
-            category: t.parent().prev().text()
+            category: t.parent().parent().prev().text()
         }, function (data) {
             hiddenPlannedValue.text(data);
             console.log(hiddenPlannedValue);
@@ -31,15 +31,15 @@ function BudgetWorker() {
     };
 
     this.cancel = function (t) {
-        this.anchor = t.parent().next();
-        this.updateForm = t.parent();
+        this.anchor = t.parent().parent().next();
+        this.updateForm = t.parent().parent();
         this.updateForm.fadeOut();
         this.anchor.fadeIn();
         this.updateForm.remove();
     };
 
     this.budgetUpdateInput = function (value) {
-        return '<td class="budget-update-form"><input type="text" class="update-input" name="budget_update" value=' + value + '><button class="btn-primary budget-update" id="budget-update-submit">Save</button><button class="btn-secondary" id="budget-update-cancel">Cancel</button></td>';
+        return '<td class="budget-update-form"><input type="text" class="update-input" name="budget_update" value=' + value + '><div class="button-container"><button class="budget-update-button" id="budget-update-submit">Save</button><button class="budget-update-button" id="budget-update-cancel">Cancel</button></div></td>';
     };
 
     this.createNewCategoryForm = function (t) {
@@ -48,7 +48,9 @@ function BudgetWorker() {
         this.plannedBudget = '<label for="planned">Planned Budget</label><input id="new-planned-input" class="new-category-form-input" name=planned" type="text"><button id="category-submit" type="submit">Save</button><button id="category-cancel" type="button">Cancel</button>';
         this.newCategoryForm.append(this.categoryNameInput);
         this.newCategoryForm.append(this.plannedBudget);
-        return t.before(this.newCategoryForm);
+        this.newCategoryContainer = $('<div id="new-category-container"></div>');
+        this.newCategoryContainer.append(this.newCategoryForm);
+        return t.before(this.newCategoryContainer);
     };
 
     this.saveNewCategory = function (t) {
