@@ -1,6 +1,7 @@
 import os
 from flask import Blueprint, render_template, request, session, jsonify
 from database.db import get_db
+from config.envSettings import month_strings
 
 PLAID_ENV = os.getenv('PLAID_ENV', 'development')
 
@@ -12,11 +13,17 @@ bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 def home():
     # user_id = session['user_id']
     db = get_db()
-    transactions = db.execute("SELECT * FROM activity").fetchall()
-    for transaction in transactions:
+    response = db.execute("SELECT * FROM activity").fetchall()
+
+    transactions = []
+    for transaction in response:
+        # Convert from SQL row to dict
+        transaction = dict(transaction)
         print(transaction)
-        print(transaction['date'])
         # Create function to convert date into words with abbreviated months
+        split_date = str(transaction['date']).split('-')
+        transaction['date'] = ' '.join([split_date[2], month_strings[int(split_date[1])-1]])
+        transactions.append(transaction)
 
     return render_template('dashboard/home.html', transactions=transactions)
 
