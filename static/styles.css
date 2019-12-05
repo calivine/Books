@@ -13,7 +13,7 @@
 body {
     background-color: inherit;
     display: block;
-    margin: 0 10px;
+    margin: 0 auto;
     width: 75vw;
 }
 
@@ -128,7 +128,7 @@ th {
 
 .container {
     max-width: 1000px;
-    margin: 30px;
+    margin: auto;
 }
 
 .description-edit-input {
@@ -141,6 +141,10 @@ th {
     width: 136px;
 }
 
+.description-edit-submit:active, .description-edit-cancel:active {
+    color: #cccccc;
+}
+
 .item-delete-buttons {
     margin: 25px;
     width: 50px;
@@ -149,6 +153,10 @@ th {
 
 .fas .fa-key {
     color: #000000;
+}
+
+.fa-key:active {
+    color: #aaaaaa;
 }
 
 .new-category-form-input {

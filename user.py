@@ -128,6 +128,7 @@ def update_account_link(token):
 def rotate(token):
     return render_template('user/rotate.html', token=token)
 
+
 # ROTATE access token
 @bp.route('/rotate/access_token/<token>', methods=['GET'])
 def rotate_access_token(token):

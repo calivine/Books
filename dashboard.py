@@ -13,6 +13,10 @@ def home():
     # user_id = session['user_id']
     db = get_db()
     transactions = db.execute("SELECT * FROM activity").fetchall()
+    for transaction in transactions:
+        print(transaction)
+        print(transaction['date'])
+        # Create function to convert date into words with abbreviated months
 
     return render_template('dashboard/home.html', transactions=transactions)
 
