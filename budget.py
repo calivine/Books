@@ -1,7 +1,7 @@
 from database.db import get_db
 from datetime import datetime
 from flask import Blueprint, render_template, session, request, jsonify, redirect, url_for
-from config.envSettings import month_strings
+from services.constants import month_strings
 
 bp = Blueprint('budget', __name__, url_prefix='/budget')
 

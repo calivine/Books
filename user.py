@@ -106,13 +106,14 @@ def get_account_details():
 
 # UPDATE item
 # Update credentials for Plaid Link
-@bp.route('/update-account-link/<token>', methods=['GET'])
-def update_account_link(token):
-
+@bp.route('/update-account-link/<mask>', methods=['GET'])
+def update_account_link(mask):
+    access_token = get_db().execute('SELECT access_token FROM item WHERE item_mask = ?', (mask,)).fetchone()
+    print(access_token)
     public_token = None
     # Get a new public token
     try:
-        response = client.Item.public_token.create(token)
+        response = client.Item.public_token.create(access_token)
         public_token = response['public_token']
     except plaid.errors.PlaidError as e:
         print(e)

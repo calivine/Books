@@ -24,7 +24,7 @@
                 <tr class='item-row' id='{{ account['item_mask'] }}'>
                     <td>****{{ account['item_mask'] }}</td>
                     <td class='item-update'><a
-                        href='{{ url_for('user.update_account_link', token=account['access_token']) }}'><i id='wrench-icon'
+                        href='{{ url_for('user.update_account_link', mask=account['item_mask']) }}'><i id='wrench-icon'
                                                                                                            class="fas fa-key"></i></a>
                     </td>
                     <td class='item-info' id='{{ account['item_mask'] }}'><i class="fas fa-info-circle"></i></td>

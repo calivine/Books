@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, render_template, request, session, jsonify
 from database.db import get_db
-from config.envSettings import month_strings
+from services.constants import month_strings
 
 PLAID_ENV = os.getenv('PLAID_ENV', 'development')
 
