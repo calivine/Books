@@ -1,9 +1,13 @@
 import os
-from flask import Blueprint, render_template, request, session, jsonify
+import csv, sys
+from flask import Blueprint, Flask, flash, url_for, render_template, request, session, jsonify, redirect
+from werkzeug.utils import secure_filename
 from database.db import get_db
 from services.constants import month_strings
 
 PLAID_ENV = os.getenv('PLAID_ENV', 'development')
+
+ALLOWED_EXTENSIONS = {'csv'}
 
 bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 
@@ -24,6 +28,14 @@ def home():
         split_date = str(transaction['date']).split('-')
         transaction['date'] = ' '.join([split_date[2], month_strings[int(split_date[1])-1]])
         transactions.append(transaction)
+
+    pending_transactions = []
+    for transaction in transactions:
+        if transaction['pending'] == 1:
+            pending_transactions.append(transaction['transaction_id'])
+    for transaction in transactions:
+        if transaction['transaction_id'] in pending_transactions:
+            transactions.remove(transaction)
 
     return render_template('dashboard/home.html', transactions=transactions)
 
@@ -67,6 +79,39 @@ def update_description():
 
     return jsonify(description=description,
                    id=trans_id)
+
+
+# UPLOAD and CREATE new transaction data from csv
+@bp.route('/import_csv', methods=['POST'])
+def import_csv():
+    if request.method == 'POST':
+
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(url_for('dashboard.home'))
+        file = request.files['file']
+        print(file.filename)
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(url_for('dashboard.home'))
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            with open(filename, newline='') as csvfile:
+                reader = csv.reader(csvfile)
+                for row in reader:
+                    print(row)
+
+        return redirect(url_for('dashboard.home'))
+
+
+
+
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 
 
 def get_monthly_spending(transactions):

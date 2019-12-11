@@ -228,3 +228,8 @@ th {
 #planned-total-label {
     width: inherit;
 }
+
+#plus-icon-container {
+    width: 25px;
+    height: 25px;
+}
