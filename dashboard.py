@@ -1,11 +1,15 @@
 import os
-import csv, sys
-from flask import Blueprint, Flask, flash, url_for, render_template, request, session, jsonify, redirect
+import csv
+from flask import Blueprint, flash, url_for, render_template, request, session, jsonify, redirect, current_app as app
 from werkzeug.utils import secure_filename
 from database.db import get_db
 from services.constants import month_strings
+from services.generateString import generate_random_alpha_num
+
 
 PLAID_ENV = os.getenv('PLAID_ENV', 'development')
+
+UPLOAD_FOLDER = 'storage/temp'
 
 ALLOWED_EXTENSIONS = {'csv'}
 
@@ -85,21 +89,30 @@ def update_description():
 @bp.route('/import_csv', methods=['POST'])
 def import_csv():
     if request.method == 'POST':
-
+        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
         if 'file' not in request.files:
             flash('No file part')
             return redirect(url_for('dashboard.home'))
         file = request.files['file']
+
         print(file.filename)
         if file.filename == '':
             flash('No selected file')
             return redirect(url_for('dashboard.home'))
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            with open(filename, newline='') as csvfile:
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+
+            with open(os.path.join(app.config['UPLOAD_FOLDER'], filename), newline='') as csvfile:
                 reader = csv.reader(csvfile)
                 for row in reader:
-                    print(row)
+                    print(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+                    # Starting with first row of data, save to Activities table
+                    # Convert values as needed/generate transaction IDs.
+                    # Generate a Transaction ID
+                    transaction_id = generate_random_alpha_num(37)
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         return redirect(url_for('dashboard.home'))
 

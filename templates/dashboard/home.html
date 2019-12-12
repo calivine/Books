@@ -40,7 +40,7 @@
                         <td>{{ transaction['category'] }}</td>
                         <td class='include-in-budget'><input type='checkbox' class='toggle-budget'
                                                              id='{{ transaction['transaction_id'] }}'
-                                {% if transaction['budget'] == 'true' %} checked {% endif %}></td>
+                            {% if transaction['budget'] == 'true' %} checked {% endif %}></td>
                     </tr>
                 {% endif %}
             {% endfor %}
@@ -78,17 +78,29 @@
                         <td>{{ transaction['category'] }}</td>
                         <td class='include-in-budget'><input type='checkbox' class='toggle-budget'
                                                              id='{{ transaction['transaction_id'] }}'
-                                {% if transaction['budget'] == 'true' %} checked {% endif %}></td>
+                            {% if transaction['budget'] == 'true' %} checked {% endif %}></td>
                     </tr>
                 {% endif %}
             {% endfor %}
             </tbody>
         </table>
     </div>
-    <form action='{{ url_for('dashboard.import_csv') }}' method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
+    <div class='import-data'>
+        <fieldset>
+            <legend>CSV Upload</legend>
+            <form action='{{ url_for('dashboard.import_csv') }}' method=post enctype=multipart/form-data>
+                <label for='select-institution'>Select which bank you're uploading data for:</label>
+                <select name='institution' id='select-institution'>
+                    <option value='capital-one'>Capital One</option>
+                    <option value='td-bank'>TD Bank</option>
+                    <option value='fidelity'>Fidelity</option>
+                </select>
+                <input type=file name=file>
+                <button type='submit'>Upload</button>
+            </form>
+        </fieldset>
+    </div>
+
     <script type='text/javascript' src='{{ url_for('static', filename='js/sort-table.js') }}'></script>
     <script type='text/javascript' src='{{ url_for('static', filename='js/edit-description.js') }}'></script>
     <script type='text/javascript' src='{{ url_for('static', filename='js/update-accounts.js') }}'></script>
