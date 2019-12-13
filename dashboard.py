@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from database.db import get_db
 from services.constants import month_strings
 from services.generateString import generate_random_alpha_num
+from services.utilities import format_date
 
 
 PLAID_ENV = os.getenv('PLAID_ENV', 'development')
@@ -112,13 +113,30 @@ def import_csv():
                     # Convert values as needed/generate transaction IDs.
                     # Generate a Transaction ID
                     transaction_id = generate_random_alpha_num(37)
+                    amount = row[5] if row[6] == '' else '-'+row[6]
+                    date = row[0].replace('/', '-')
+                    date = format_date(date)
+                    params = (
+                        '',
+                        amount,
+                        row[4],
+                        'category_id',
+                        date,
+                        'USD',
+                        row[3],
+                        0,
+                        '',
+                        transaction_id,
+                        'special',
+                        'true',
+                        '',     # Category type
+                        '',     # Category name
+                        '')     # Sub-category
+                    get_db().execute("INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params)
+                    get_db().commit()
             os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         return redirect(url_for('dashboard.home'))
-
-
-
-
 
 
 def allowed_file(filename):
