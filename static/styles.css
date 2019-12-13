@@ -149,6 +149,10 @@ th {
     color: #cccccc;
 }
 
+.import-data {
+    min-width: 25%;
+}
+
 .item-delete-buttons {
     margin: 25px;
     width: 50px;
@@ -190,6 +194,11 @@ th {
 #close-details {
     margin: 0 175px;
     width: 175px;
+}
+
+#csv-upload-form {
+    margin: 0 auto;
+    min-width: 75%;
 }
 
 #description-edit-label {

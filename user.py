@@ -1,6 +1,5 @@
 import os
 import plaid
-import datetime
 from plaid.errors import APIError, ItemError
 from flask import Blueprint, redirect, render_template, request, session, url_for, jsonify
 from database.db import get_db
@@ -50,9 +49,7 @@ def get_access_token():
         print(e)
 
     item_mask = create_mask(item_id)
-    print(item_mask)
-    print(access_token)
-    print(item_id)
+    print(item_mask, access_token, item_id)
     response = client.Item.get(access_token)
     inst_id = response['item']['institution_id']
     response = client.Institutions.get_by_id(inst_id)

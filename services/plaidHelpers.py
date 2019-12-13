@@ -1,8 +1,6 @@
-import datetime
-import plaid
 from database.db import get_db
 from app import client
-from plaid.errors import APIError, ItemError
+from plaid.errors import ItemError
 from services.transactions import save_transactions
 
 
