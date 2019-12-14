@@ -1,5 +1,6 @@
 import os
 import csv
+from datetime import datetime
 from flask import Blueprint, flash, url_for, render_template, request, session, jsonify, redirect, current_app as app
 from werkzeug.utils import secure_filename
 from database.db import get_db
@@ -20,9 +21,12 @@ bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 # VIEW home dashboard
 @bp.route('/home')
 def home():
-    # user_id = session['user_id']
+    user_id = session['user_id']
     db = get_db()
     response = db.execute("SELECT * FROM activity").fetchall()
+    budget_period = '-'.join((month_strings[datetime.now().month - 1], str(datetime.now().year)))
+    # Get current month and year and add as parameter for getting budget data
+    categories = db.execute("SELECT category FROM budget WHERE user_id = ? AND period = ?", (user_id, budget_period,)).fetchall()
 
     transactions = []
     for transaction in response:
@@ -42,7 +46,7 @@ def home():
         if transaction['transaction_id'] in pending_transactions:
             transactions.remove(transaction)
 
-    return render_template('dashboard/home.html', transactions=transactions)
+    return render_template('dashboard/home.html', transactions=transactions, categories=categories)
 
 
 # EDIT transaction budget

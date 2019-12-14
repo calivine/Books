@@ -100,6 +100,29 @@
             </form>
         </fieldset>
     </div>
+    <div class='import-data'>
+        <fieldset>
+            <legend>
+                Manual Input
+            </legend>
+            <form action='' id='manual-upload-form' method='post'>
+                <label for='description-input'>Transaction Description:</label>
+                <input type='text' class='manual-input' name='description' id='description-input'>
+                <label for='amount-input'>Amount $:</label>
+                <input type='number' class='manual-input' id='amount-input' name='amount'>
+                <select name='category' id='manual-select-category' class='manual-input'>
+                    {% for category in categories %}
+                    <option class='manual-input' value='{{ category['category'] }}'>{{ category['category'] }}</option>
+                    {% endfor %}
+                </select>
+                <label for='transaction-date-input'>Transaction Date:</label>
+                <input type='date' class='manual-input' id='transaction-date-input' name='transaction_date'>
+                <button class='manual-input' id='manual-input-button' type='submit'>Save</button>
+                
+                
+            </form>
+        </fieldset>
+    </div>
 
     <script type='text/javascript' src='{{ url_for('static', filename='js/sort-table.js') }}'></script>
     <script type='text/javascript' src='{{ url_for('static', filename='js/edit-description.js') }}'></script>
