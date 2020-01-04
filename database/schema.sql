@@ -56,3 +56,8 @@ CREATE TABLE budget (
     period TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user (id)
 );
+
+CREATE TABLE category (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+)

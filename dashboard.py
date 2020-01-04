@@ -8,7 +8,6 @@ from services.constants import month_strings
 from services.generateString import generate_random_alpha_num
 from services.utilities import format_date
 
-
 PLAID_ENV = os.getenv('PLAID_ENV', 'development')
 
 UPLOAD_FOLDER = 'storage/temp'

@@ -1,6 +1,7 @@
 from database.db import get_db
 
 
+# Run this function through Flask CLI to seed database tables with data from seeders.py
 def seed_db():
     from database.seeders import user, items, accounts, budget
 
@@ -14,10 +15,10 @@ def seed_db():
     for item in items:
         db.execute("INSERT INTO item (user_id, access_token, id, item_mask, institution) "
                    "VALUES (?, ?, ?, ?, ?)", (item['user_id'],
-                                           item['access_token'],
-                                           item['id'],
-                                           item['item_mask'],
-                                           item['institution'],))
+                                              item['access_token'],
+                                              item['id'],
+                                              item['item_mask'],
+                                              item['institution'],))
         db.commit()
 
     for account in accounts:

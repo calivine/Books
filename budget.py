@@ -12,8 +12,10 @@ def budget():
     db = get_db()
     user_id = session['user_id']
     budget_period = '-'.join((month_strings[datetime.now().month - 1], str(datetime.now().year)))
+    print(budget_period)
     # Get current month and year and add as parameter for getting budget data
     monthly_budget = db.execute("SELECT * FROM budget WHERE user_id = ? AND period = ?", (user_id, budget_period,)).fetchall()
+    print(len(monthly_budget))
     if len(monthly_budget) == 0:
         monthly_budget = new_budget_sheet(user_id, budget_period)
     return render_template('budget/index.html', budget_sheet=monthly_budget)
