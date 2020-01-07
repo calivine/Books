@@ -11,12 +11,14 @@ function BudgetWorker() {
     };
 
     this.updateBudget = function (t, self) {
-        let updateForm = t.parent().parent();
-        let hiddenPlannedValue = t.parent().parent().next();
+        console.log(t);
+        console.log(t.parent());
+        let updateForm = t.parent();
+        let hiddenPlannedValue = t.parent().next();
         $.post('/budget/update', {
             new_value: $('input.update-input').val(),
             budget_period: $('h3#budget-period').text(),
-            category: t.parent().parent().prev().text()
+            category: t.parent().prev().text()
         }, function (data) {
             hiddenPlannedValue.text(data);
             console.log(hiddenPlannedValue);
@@ -31,6 +33,8 @@ function BudgetWorker() {
     };
 
     this.cancel = function (t) {
+        console.log(this.anchor, t);
+
         this.anchor = t.parent().parent().next();
         this.updateForm = t.parent().parent();
         this.updateForm.fadeOut();
@@ -39,7 +43,7 @@ function BudgetWorker() {
     };
 
     this.budgetUpdateInput = function (value) {
-        return '<td class="budget-update-form"><input type="text" autofocus class="update-input" name="budget_update" value=' + value + '><div class="button-container"><button class="budget-update-button" id="budget-update-submit">Save</button><button class="budget-update-button" id="budget-update-cancel">Cancel</button></div></td>';
+        return '<td class="budget-update-form"><input type="text" class="update-input" name="budget_update" value=' + value + '><button class="btn-primary budget-update" id="budget-update-submit">Save</button><button class="btn-secondary" id="budget-update-cancel">Cancel</button></td>';
     };
 
     this.createNewCategoryForm = function (t) {

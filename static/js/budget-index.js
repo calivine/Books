@@ -1,4 +1,5 @@
 $(function () {
+    $('#add-new-category').hide();
     let worker = new BudgetWorker;
     // Tally total 'planned' budget
     worker.getPlannedTotal();
@@ -45,7 +46,6 @@ $(function () {
 });
 
 $(function () {
-   $('#add-new-category').hide();
    $('#plus-icon-container').on('mouseover', function() {
        $('#add-new-category').slideToggle();
 

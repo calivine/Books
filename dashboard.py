@@ -1,18 +1,11 @@
 import os
 import csv
-from datetime import datetime
 from flask import Blueprint, flash, url_for, render_template, request, session, jsonify, redirect, current_app as app
 from werkzeug.utils import secure_filename
 from database.db import get_db
-from services.constants import month_strings
-from services.generateString import generate_random_alpha_num
-from services.utilities import format_date
+from services.constants import UPLOAD_FOLDER
+from services.utilities import format_date, allowed_file, db_assist, get_budget_period, convert_to_dict, set_date_window, format_transaction, update_name, get_monthly_spending, filter_pending
 
-PLAID_ENV = os.getenv('PLAID_ENV', 'development')
-
-UPLOAD_FOLDER = 'storage/temp'
-
-ALLOWED_EXTENSIONS = {'csv'}
 
 bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 
@@ -20,27 +13,23 @@ bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 # VIEW home dashboard
 @bp.route('/home')
 def home():
-    user_id = session['user_id']
-    db = get_db()
-    response = db.execute("SELECT * FROM activity").fetchall()
-    budget_period = '-'.join((month_strings[datetime.now().month - 1], str(datetime.now().year)))
-    # Get current month and year and add as parameter for getting budget data
-    categories = db.execute("SELECT category FROM budget WHERE user_id = ? AND period = ?", (user_id, budget_period,)).fetchall()
+    user_id = session['user_id']         # User ID
+    budget_period = get_budget_period()  # Current budget period
+    print(budget_period)
+    dates = set_date_window(7)           # Set window for transactions to be displayed
 
-    transactions = []
-    for transaction in response:
-        # Convert from SQL row to dict
-        transaction = dict(transaction)
-        print(transaction)
-        # Create function to convert date into words with abbreviated months
-        split_date = str(transaction['date']).split('-')
-        transaction['date'] = ' '.join([split_date[2], month_strings[int(split_date[1])-1]])
-        transactions.append(transaction)
+    # response = db_assist('select', 'activity')  # Select all transactions from activities table
+    response = get_db().execute('SELECT * FROM activity Where date >= ? and date <= ?', (dates['start'], dates['end'], )).fetchall()
 
-    pending_transactions = []
-    for transaction in transactions:
-        if transaction['pending'] == 1:
-            pending_transactions.append(transaction['transaction_id'])
+    categories_response = db_assist('select', 'budget', ['user_id', 'period'], [user_id, budget_period])
+
+    for category in categories_response:
+        print(category['category'])
+    categories = db_assist('select', 'budget', ['user_id', 'period'], [user_id, budget_period])
+    transactions = list(map(convert_to_dict, response))
+
+    pending_transactions = filter_pending(transactions)
+
     for transaction in transactions:
         if transaction['transaction_id'] in pending_transactions:
             transactions.remove(transaction)
@@ -89,6 +78,26 @@ def update_description():
                    id=trans_id)
 
 
+# CREATE new transaction data from input form
+@bp.route('/save_transaction', methods=['POST'])
+def save_transaction():
+    # Retrieve data from form
+    description = request.form['description']
+    amount = request.form['amount']
+    category = request.form['category']
+    date = request.form['transaction_date']
+    print(description)
+    print(amount)
+    print(category)
+    print(date)
+    # Package transaction in parameters list to be saved in database
+    params = format_transaction(description, amount, date, category)
+    # Save to activities table
+    db_assist('insert', 'activity', params)
+    print(params)
+    return redirect(url_for('dashboard.home'))
+
+
 # UPLOAD and CREATE new transaction data from csv
 @bp.route('/import_csv', methods=['POST'])
 def import_csv():
@@ -115,51 +124,17 @@ def import_csv():
                     # Starting with first row of data, save to Activities table
                     # Convert values as needed/generate transaction IDs.
                     # Generate a Transaction ID
-                    transaction_id = generate_random_alpha_num(37)
                     amount = row[5] if row[6] == '' else '-'+row[6]
                     date = row[0].replace('/', '-')
                     date = format_date(date)
-                    params = (
-                        '',
-                        amount,
-                        row[4],
-                        'category_id',
-                        date,
-                        'USD',
-                        row[3],
-                        0,
-                        '',
-                        transaction_id,
-                        'special',
-                        'true',
-                        '',     # Category type
-                        '',     # Category name
-                        '')     # Sub-category
-                    get_db().execute("INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params)
-                    get_db().commit()
+                    category = row[4]
+                    description = row[3]
+                    params = format_transaction(description, amount, date, category)
+                    db_assist('insert', 'activity', params)
+                    # get_db().execute("INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params)
+                    # get_db().commit()
             os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
         return redirect(url_for('dashboard.home'))
 
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-
-
-def get_monthly_spending(transactions):
-    total = 0
-    for line in transactions:
-        if line['budget'] == 'true' and line['category_id'] != '16000000':
-            if line['amount'] > 0:
-                total += line['amount']
-    return total
-
-
-# def update_name(description, trans_id)
-# Function takes update_name and id
-# gets transaction data based on id and updates the name based on update_name
-def update_name(description, trans_id):
-    get_db().execute('UPDATE activity SET name = ? WHERE transaction_id = ?', (description, trans_id,)).commit()
 

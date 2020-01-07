@@ -5,7 +5,7 @@ from app import client
 from plaid.errors import APIError
 
 
-def save_transactions(access_token, start_date='{:%Y-%m-%d}'.format(datetime.date.today() - datetime.timedelta(days=2)), end_date='{:%Y-%m-%d}'.format(datetime.date.today())):
+def save_transactions(access_token, start_date='{:%Y-%m-%d}'.format(datetime.date.today() - datetime.timedelta(days=7)), end_date='{:%Y-%m-%d}'.format(datetime.date.today())):
     db = get_db()
     start = start_date
     end = end_date
@@ -24,6 +24,7 @@ def save_transactions(access_token, start_date='{:%Y-%m-%d}'.format(datetime.dat
         # print(response['item'])
         transactions = format_category(transaction_details['transactions'])
         for data in transactions:
+            print(data['transaction_id'])
             if data['transaction_id'] not in existing:
                 params = (data['account_id'],
                           data['amount'],
@@ -39,8 +40,9 @@ def save_transactions(access_token, start_date='{:%Y-%m-%d}'.format(datetime.dat
                           'true',
                           data['category_type'],
                           data['category_name'],
-                          data['sub_category'])
-                db.execute("INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params)
+                          data['sub_category'],
+                          '')
+                db.execute("INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)", params)
                 db.commit()
     except plaid.errors.PlaidError as e:
         print(e)

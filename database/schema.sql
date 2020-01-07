@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS item;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS account;
+DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS activity;
 DROP TABLE IF EXISTS budget;
 
@@ -30,6 +31,11 @@ CREATE TABLE account (
     access_token TEXT
 );
 
+CREATE TABLE category (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
 CREATE TABLE activity (
     account_id TEXT,
     amount INTEGER,
@@ -45,7 +51,9 @@ CREATE TABLE activity (
     budget TEXT,
     category_type TEXT,
     category_name TEXT,
-    sub_category TEXT
+    sub_category TEXT,
+    budget_category INTEGER,
+    FOREIGN KEY (budget_category) REFERENCES category (id)
 );
 
 CREATE TABLE budget (
@@ -57,7 +65,4 @@ CREATE TABLE budget (
     FOREIGN KEY (user_id) REFERENCES user (id)
 );
 
-CREATE TABLE category (
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
-)
+

@@ -1,4 +1,3 @@
-import os
 import plaid
 from plaid.errors import APIError, ItemError
 from flask import Blueprint, redirect, render_template, request, session, url_for, jsonify
@@ -6,9 +5,8 @@ from database.db import get_db
 from app import client
 from services.transactions import save_transactions
 from services.plaidHelpers import save_item_accounts, create_mask
-
-PLAID_ENV = os.getenv('PLAID_ENV', 'development')
-
+from services.constants import PLAID_ENV
+from services.utilities import db_assist
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 
@@ -17,10 +15,9 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 @bp.route('/items', methods=('GET', 'POST'))
 def items():
     user_id = session['user_id']
-    db = get_db()
 
-    account_list = db.execute('SELECT * FROM item WHERE user_id = ?', (user_id,)).fetchall()
-
+    account_list = db_assist('select', 'item', ['user_id'], [user_id])
+    # Update transaction data
     for account in account_list:
         save_transactions(account['access_token'])
 
@@ -56,6 +53,7 @@ def get_access_token():
     inst_name = response['institution']['name']
     db.execute("INSERT INTO item VALUES (?, ?, ?, ?, ?)", (session['user_id'], access_token, item_id, item_mask, inst_name,))
     db.commit()
+    db_assist('insert', 'item', [session['user_id'], access_token, item_id, item_mask, inst_name])
     save_item_accounts(access_token)
 
     return jsonify(exchange_response)
@@ -106,11 +104,11 @@ def get_account_details():
 @bp.route('/update-account-link/<mask>', methods=['GET'])
 def update_account_link(mask):
     access_token = get_db().execute('SELECT access_token FROM item WHERE item_mask = ?', (mask,)).fetchone()
-    print(access_token)
+    print(access_token['access_token'])
     public_token = None
     # Get a new public token
     try:
-        response = client.Item.public_token.create(access_token)
+        response = client.Item.public_token.create(access_token['access_token'])
         public_token = response['public_token']
     except plaid.errors.PlaidError as e:
         print(e)
@@ -121,13 +119,13 @@ def update_account_link(mask):
                            public_key=client.public_key)
 
 
-# GET ROTATE
+# GET ROTATE access token page
 @bp.route('/rotate/<token>', methods=['GET'])
 def rotate(token):
     return render_template('user/rotate.html', token=token)
 
 
-# ROTATE access token
+# ROTATE access token confirmation
 @bp.route('/rotate/access_token/<token>', methods=['GET'])
 def rotate_access_token(token):
     db = get_db()

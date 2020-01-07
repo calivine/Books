@@ -3,7 +3,7 @@ from database.db import get_db
 
 # Run this function through Flask CLI to seed database tables with data from seeders.py
 def seed_db():
-    from database.seeders import user, items, accounts, budget
+    from database.seeders import user, items, accounts, budget, categories
 
     db = get_db()
 
@@ -41,3 +41,8 @@ def seed_db():
                                               sheet['actual'],
                                               sheet['period'],))
         db.commit()
+
+    for category in categories:
+        db.execute("INSERT INTO category (name) VALUES (?)", (category,))
+        db.commit()
+

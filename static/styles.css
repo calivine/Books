@@ -243,6 +243,12 @@ th {
 }
 
 #plus-icon-container {
-    width: 25px;
-    height: 25px;
+    display: inline-block;
+    min-width: 45px;
+    min-height: 45px;
+    padding: auto;
+}
+
+#plus-icon {
+    margin: 20px;
 }

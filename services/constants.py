@@ -1,4 +1,12 @@
-month_strings = [
+import os
+
+ALLOWED_EXTENSIONS = {'csv'}
+
+UPLOAD_FOLDER = 'storage/temp'
+
+PLAID_ENV = os.getenv('PLAID_ENV', 'development')
+
+MONTH_STRING = [
     'January',
     'February',
     'March',
