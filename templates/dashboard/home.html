@@ -7,71 +7,16 @@
 
 {% block main %}
     <div class='container-fluid'>
-        <table class='sortable table'>
-            <thead>
-                <tr>
-                    <th scope='col' class='transaction-date' data-sort='date'></th>
-                    <th scope='col' class='transaction-amount' data-sort='amount'></th>
-                    <th scope='col' data-sort='name'></th>
-                    <th scope='col' data-sort='name'></th>
-                    <th scope='col' class='include-in-budget'></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>Pending Transactions</tr>
-                {% for transaction in transactions %}
-                    {% if transaction['amount'] > 0 and transaction['category_id'] != '16000000' and transaction['pending'] == 1 %}
-                        <tr>
-                            <td class='transaction-date'>{{ transaction['date'] }}</td>
-                            <td class='transaction-amount'>${{ transaction['amount'] }}</td>
-                            <td class='description-edit-icon' id='{{ transaction['transaction_id'] }}'>{{ transaction['name'] }}<!-- <i class='fas fa-edit' id='edit-icon'></i> --><span class='icon-link'></span></td>
-                            <td class='description-edit'>
-                                <label for='{{ transaction['transaction_id'] }}' id='description-edit-label'>Edit Description</label>
-                                <input type='text' class='description-edit-input' id='{{ transaction['transaction_id'] }}' name='description' value='{{ transaction['name'] }}'>
-                                <button class='description-edit-submit' type='submit'>Save</button>
-                                <button class='description-edit-cancel' type='submit'>Cancel</button>
-                            </td>
-                            <td>{{ transaction['budget_category'] }}</td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
-        <table class='sortable table'>
-            <thead>
-                <tr>
-                    <th scope='col' class='transaction-date' data-sort='date'></th>
-                    <th scope='col' class='transaction-amount' data-sort='amount'></th>
-                    <th scope='col' data-sort='name'></th>
-                    <th scope='col' data-sort='name'></th>
-                    <th scope='col' class='include-in-budget'></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for transaction in transactions %}
-                {% if transaction['amount'] > 0 and transaction['category_id'] != '16000000' and transaction['pending'] == 0 %}
-                    <tr>
-                        <td class='transaction-date'>{{ transaction['date'] }}</td>
-                        <td class='transaction-amount'>${{ transaction['amount'] }}</td>
-                        <td class='description-edit-icon'
-                            id='{{ transaction['transaction_id'] }}'>{{ transaction['name'] }}
-                            <!-- <i class='fas fa-edit' id='edit-icon'></i> -->
-                            <span class='icon-link'></span>
-                        </td>
-                        <td class='description-edit'>
-                            <label for='{{ transaction['transaction_id'] }}' id='description-edit-label'>Edit
-                                Description</label>
-                            <input type='text' class='description-edit-input' id='{{ transaction['transaction_id'] }}'
-                                   name='description' value='{{ transaction['name'] }}'>
-                            <button class='description-edit-submit primary' type='submit'>Save</button>
-                            <button class='description-edit-cancel' type='submit'>Cancel</button>
-                        </td>
-                        <td>{{ transaction['budget_category'] }}</td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-            </tbody>
-        </table>
+        <tr>Pending Transactions</tr>
+        {% with transactions = transactions, pending = 1, categories = categories %}
+            {% include 'dashboard/transactions-table.html' %}
+        {% endwith %}
+
+        {# PROCESSED TRANSACTIONS #}
+        {% with transactions = transactions, pending = 0, categories = categories %}
+            {% include 'dashboard/transactions-table.html' %}
+        {% endwith %}
+
         <div class='row'>
             <div class='col'>
                 <fieldset>
