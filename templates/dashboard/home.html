@@ -6,55 +6,46 @@
 
 
 {% block main %}
-    <div class='container'>
-        <table class='sortable'>
+    <div class='container-fluid'>
+        <table class='sortable table'>
             <thead>
-            <tr>
-                <th class='transaction-date' data-sort='date'></th>
-                <th class='transaction-amount' data-sort='amount'></th>
-                <th data-sort='name'></th>
-                <th data-sort='name'></th>
-                <th class='include-in-budget'></th>
-            </tr>
+                <tr>
+                    <th scope='col' class='transaction-date' data-sort='date'></th>
+                    <th scope='col' class='transaction-amount' data-sort='amount'></th>
+                    <th scope='col' data-sort='name'></th>
+                    <th scope='col' data-sort='name'></th>
+                    <th scope='col' class='include-in-budget'></th>
+                </tr>
             </thead>
             <tbody>
-            <tr>Pending Transactions</tr>
-            {% for transaction in transactions %}
-                {% if transaction['amount'] > 0 and transaction['category_id'] != '16000000' and transaction['pending'] == 1 %}
-                    <tr>
-                        <td class='transaction-date'>{{ transaction['date'] }}</td>
-                        <td class='transaction-amount'>${{ transaction['amount'] }}</td>
-                        <td class='description-edit-icon'
-                            id='{{ transaction['transaction_id'] }}'>{{ transaction['name'] }}
-                            <!-- <i class='fas fa-edit' id='edit-icon'></i> -->
-                            <span class='icon-link'></span>
-                        </td>
-                        <td class='description-edit'>
-                            <label for='{{ transaction['transaction_id'] }}' id='description-edit-label'>Edit
-                                Description</label>
-                            <input type='text' class='description-edit-input' id='{{ transaction['transaction_id'] }}'
-                                   name='description' value='{{ transaction['name'] }}'>
-                            <button class='description-edit-submit primary' type='submit'>Save</button>
-                            <button class='description-edit-cancel' type='submit'>Cancel</button>
-                        </td>
-                        <td>{{ transaction['category'] }}</td>
-                        <td class='include-in-budget'><input type='checkbox' class='toggle-budget'
-                                                             id='{{ transaction['transaction_id'] }}'
-                            {% if transaction['budget'] == 'true' %} checked {% endif %}></td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
+                <tr>Pending Transactions</tr>
+                {% for transaction in transactions %}
+                    {% if transaction['amount'] > 0 and transaction['category_id'] != '16000000' and transaction['pending'] == 1 %}
+                        <tr>
+                            <td class='transaction-date'>{{ transaction['date'] }}</td>
+                            <td class='transaction-amount'>${{ transaction['amount'] }}</td>
+                            <td class='description-edit-icon' id='{{ transaction['transaction_id'] }}'>{{ transaction['name'] }}<!-- <i class='fas fa-edit' id='edit-icon'></i> --><span class='icon-link'></span></td>
+                            <td class='description-edit'>
+                                <label for='{{ transaction['transaction_id'] }}' id='description-edit-label'>Edit Description</label>
+                                <input type='text' class='description-edit-input' id='{{ transaction['transaction_id'] }}' name='description' value='{{ transaction['name'] }}'>
+                                <button class='description-edit-submit' type='submit'>Save</button>
+                                <button class='description-edit-cancel' type='submit'>Cancel</button>
+                            </td>
+                            <td>{{ transaction['budget_category'] }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
             </tbody>
         </table>
-        <table class='sortable'>
+        <table class='sortable table'>
             <thead>
-            <tr>
-                <th class='transaction-date' data-sort='date'></th>
-                <th class='transaction-amount' data-sort='amount'></th>
-                <th data-sort='name'></th>
-                <th data-sort='name'></th>
-                <th class='include-in-budget'></th>
-            </tr>
+                <tr>
+                    <th scope='col' class='transaction-date' data-sort='date'></th>
+                    <th scope='col' class='transaction-amount' data-sort='amount'></th>
+                    <th scope='col' data-sort='name'></th>
+                    <th scope='col' data-sort='name'></th>
+                    <th scope='col' class='include-in-budget'></th>
+                </tr>
             </thead>
             <tbody>
             {% for transaction in transactions %}
@@ -75,56 +66,53 @@
                             <button class='description-edit-submit primary' type='submit'>Save</button>
                             <button class='description-edit-cancel' type='submit'>Cancel</button>
                         </td>
-                        <td>{{ transaction['category'] }}</td>
-                        <td class='include-in-budget'><input type='checkbox' class='toggle-budget'
-                                                             id='{{ transaction['transaction_id'] }}'
-                            {% if transaction['budget'] == 'true' %} checked {% endif %}></td>
+                        <td>{{ transaction['budget_category'] }}</td>
                     </tr>
                 {% endif %}
             {% endfor %}
             </tbody>
         </table>
+        <div class='row'>
+            <div class='col'>
+                <fieldset>
+                    <legend>CSV Upload</legend>
+                    <form action='{{ url_for('dashboard.import_csv') }}' id='csv-upload-form' method=post enctype=multipart/form-data>
+                        <label for='select-institution'>Select which bank you're uploading data for:</label>
+                        <select name='institution' id='select-institution'>
+                            <option value='capital-one'>Capital One</option>
+                            <option value='td-bank'>TD Bank</option>
+                            <option value='fidelity'>Fidelity</option>
+                        </select>
+                        <input type=file name=file>
+                        <button type='submit'>Upload</button>
+                    </form>
+                </fieldset>
+            </div>
+            <div class='col'>
+                <fieldset>
+                    <legend>
+                        Manual Input
+                    </legend>
+                    <form action='{{ url_for('dashboard.save_transaction') }}' id='manual-upload-form' method='post'>
+                        <label for='description-input'>Transaction Description:</label>
+                        <input type='text' class='manual-input' name='description' id='description-input'>
+                        <label for='amount-input'>Amount $:</label>
+                        <input type='number' step='0.01' class='manual-input' id='amount-input' name='amount'>
+                        <select name='category' id='manual-select-category' class='manual-input'>
+                            {% for category in categories %}
+                            <option class='manual-input' value='{{ category['category'] }}'>{{ category['category'] }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for='transaction-date-input'>Transaction Date:</label>
+                        <input type='date' class='manual-input' id='transaction-date-input' name='transaction_date'>
+                        <button class='manual-input' id='manual-input-button' type='submit'>Save</button>
+                    </form>
+                </fieldset>
+            </div>
+        </div>
     </div>
-    <div class='import-data'>
-        <fieldset>
-            <legend>CSV Upload</legend>
-            <form action='{{ url_for('dashboard.import_csv') }}' id='csv-upload-form' method=post enctype=multipart/form-data>
-                <label for='select-institution'>Select which bank you're uploading data for:</label>
-                <select name='institution' id='select-institution'>
-                    <option value='capital-one'>Capital One</option>
-                    <option value='td-bank'>TD Bank</option>
-                    <option value='fidelity'>Fidelity</option>
-                </select>
-                <input type=file name=file>
-                <button type='submit'>Upload</button>
-            </form>
-        </fieldset>
-    </div>
-    <div class='import-data'>
-        <fieldset>
-            <legend>
-                Manual Input
-            </legend>
-            <form action='{{ url_for('dashboard.save_transaction') }}' id='manual-upload-form' method='post'>
-                <label for='description-input'>Transaction Description:</label>
-                <input type='text' class='manual-input' name='description' id='description-input'>
-                <label for='amount-input'>Amount $:</label>
-                <input type='number' step='0.01' class='manual-input' id='amount-input' name='amount'>
-                <select name='category' id='manual-select-category' class='manual-input'>
-                    {% for category in categories %}
-                    <option class='manual-input' value='{{ category['category'] }}'>{{ category['category'] }}</option>
-                    {% endfor %}
-                </select>
-                <label for='transaction-date-input'>Transaction Date:</label>
-                <input type='date' class='manual-input' id='transaction-date-input' name='transaction_date'>
-                <button class='manual-input' id='manual-input-button' type='submit'>Save</button>
-            </form>
-        </fieldset>
-    </div>
-
     <script type='text/javascript' src='{{ url_for('static', filename='js/sort-table.js') }}'></script>
     <script type='text/javascript' src='{{ url_for('static', filename='js/edit-description.js') }}'></script>
     <script type='text/javascript' src='{{ url_for('static', filename='js/update-accounts.js') }}'></script>
-    <script type='text/javascript' src='{{ url_for('static', filename='js/toggle-budget.js') }}'></script>
 
 {% endblock %}

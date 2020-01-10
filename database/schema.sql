@@ -48,7 +48,6 @@ CREATE TABLE activity (
     pending_transaction TEXT,
     transaction_id TEXT,
     transaction_type TEXT,
-    budget TEXT,
     category_type TEXT,
     category_name TEXT,
     sub_category TEXT,

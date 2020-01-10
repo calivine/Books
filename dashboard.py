@@ -1,8 +1,8 @@
 import os
 import csv
+from Model import Model
 from flask import Blueprint, flash, url_for, render_template, request, session, jsonify, redirect, current_app as app
 from werkzeug.utils import secure_filename
-from database.db import get_db
 from services.constants import UPLOAD_FOLDER
 from services.utilities import format_date, allowed_file, db_assist, get_budget_period, convert_to_dict, set_date_window, format_transaction, update_name, get_monthly_spending, filter_pending
 
@@ -14,18 +14,20 @@ bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 @bp.route('/home')
 def home():
     user_id = session['user_id']         # User ID
+
     budget_period = get_budget_period()  # Current budget period
-    print(budget_period)
+
     dates = set_date_window(7)           # Set window for transactions to be displayed
 
-    # response = db_assist('select', 'activity')  # Select all transactions from activities table
-    response = get_db().execute('SELECT * FROM activity Where date >= ? and date <= ?', (dates['start'], dates['end'], )).fetchall()
+    model = Model(user_id)               # Create database connection
 
-    categories_response = db_assist('select', 'budget', ['user_id', 'period'], [user_id, budget_period])
+    response = model.select('activity').where(['date'], ['>=', '<=']).get((dates['start'], dates['end'], ))
+    respon = model.select('activity').get()
 
-    for category in categories_response:
-        print(category['category'])
-    categories = db_assist('select', 'budget', ['user_id', 'period'], [user_id, budget_period])
+    for r in respon:
+        print(r)
+    categories = model.select('category', 'budget').where(['user_id', 'period'], '=').get([user_id, budget_period])
+
     transactions = list(map(convert_to_dict, response))
 
     pending_transactions = filter_pending(transactions)
@@ -35,31 +37,6 @@ def home():
             transactions.remove(transaction)
 
     return render_template('dashboard/home.html', transactions=transactions, categories=categories)
-
-
-# EDIT transaction budget
-# Toggle transactions to be included in monthly budget
-@bp.route('/toggle_budget')
-def toggle_budget():
-    global START_DATE
-    global STOP_DATE
-    db = get_db()
-    transaction_id = request.args.get('transaction_id')
-
-    transaction = db.execute('SELECT budget FROM activity Where transaction_id = ?', (transaction_id,)).fetchone()
-
-    if transaction['budget'] == 'true':
-        budget = 'false'
-    else:
-        budget = 'true'
-
-    db.execute('UPDATE activity SET budget = ? WHERE transaction_id = ?', (budget, transaction_id,))
-
-    print(START_DATE, STOP_DATE)
-    transactions = db.execute('SELECT * FROM activity Where date >= ? and date <= ?', [START_DATE, STOP_DATE])
-
-    spending = get_monthly_spending(transactions)
-    return jsonify(spending=spending)
 
 
 # EDIT transaction name
@@ -82,16 +59,23 @@ def update_description():
 @bp.route('/save_transaction', methods=['POST'])
 def save_transaction():
     # Retrieve data from form
+
     description = request.form['description']
     amount = request.form['amount']
     category = request.form['category']
     date = request.form['transaction_date']
+
+    if not description or not amount or not category or not date:
+        return redirect(url_for('dashboard.home'))
+
     print(description)
     print(amount)
     print(category)
     print(date)
+
     # Package transaction in parameters list to be saved in database
     params = format_transaction(description, amount, date, category)
+
     # Save to activities table
     db_assist('insert', 'activity', params)
     print(params)
@@ -134,6 +118,7 @@ def import_csv():
                     # get_db().execute("INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params)
                     # get_db().commit()
             os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
         return redirect(url_for('dashboard.home'))
 
 

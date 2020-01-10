@@ -161,7 +161,6 @@ def format_transaction(description, amount, date, category):
         '',              # Pending Transaction ID
         transaction_id,  # Transaction ID
         'special',       # Transaction Type
-        'true',          # Budget
         '',              # Category type
         '',              # Category name
         '',              # Sub-category
@@ -183,7 +182,8 @@ def get_monthly_spending(transactions):
 # Function takes update_name and id
 # gets transaction data based on id and updates the name based on update_name
 def update_name(description, trans_id):
-    get_db().execute('UPDATE activity SET name = ? WHERE transaction_id = ?', (description, trans_id,)).commit()
+    get_db().execute('UPDATE activity SET name = ? WHERE transaction_id = ?', (description, trans_id,))
+    get_db().commit()
 
 
 def pending(transaction):

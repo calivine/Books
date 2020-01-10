@@ -37,12 +37,11 @@ def save_transactions(access_token, start_date='{:%Y-%m-%d}'.format(datetime.dat
                           data['pending_transaction_id'],
                           data['transaction_id'],
                           data['transaction_type'],
-                          'true',
                           data['category_type'],
                           data['category_name'],
                           data['sub_category'],
                           '')
-                db.execute("INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)", params)
+                db.execute("INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params)
                 db.commit()
     except plaid.errors.PlaidError as e:
         print(e)
