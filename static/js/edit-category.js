@@ -1,8 +1,10 @@
-$('td.description-edit').each(function () {
+$('td.category-edit').each(function () {
     $(this).hide();
 });
-$(function () {
-    $('td.description-edit-icon').each(function () {
+
+function displayEdit(tag)
+{
+    $(tag).each(function () {
         $(this).on('click', function () {
             console.log($(this));
             console.log($(this).next());
@@ -10,15 +12,32 @@ $(function () {
             $(this).hide();
         });
     });
-});
+}
+
+function cancelButton(button)
+{
+    $(button).each(function () {
+        $(this).on('click', function () {
+            console.log($(this));
+            console.log($(this).next());
+            $(this).parent().prev().show();
+            $(this).parent().hide();
+        });
+    });
+}
+
+// Display select
+$(displayEdit('td.budget-category'));
+
+
 $(function () {
-    $('button.description-edit-submit').each(function () {
+    $('button.category-edit-submit').each(function () {
         $(this).bind('click', function () {
-            $.getJSON('/dashboard/update_description', {
+            $.getJSON('/dashboard/update_category', {
                 update_name: $(this).prev().val(),
                 id: $(this).prev().attr('id')
             }, function (data) {
-                let updatedDescription = $('td[id=' + data.id + '][class="description-edit-icon"]');
+                let updatedDescription = $('td[id=' + data.id + '][class="budget-category"]');
                 console.log(updatedDescription);
                 console.log(updatedDescription.text());
                 updatedDescription.text(data.description).show();
@@ -31,13 +50,6 @@ $(function () {
     });
 });
 
-$(function () {
-    $('button.description-edit-cancel').each(function () {
-        $(this).on('click', function () {
-            console.log($(this));
-            console.log($(this).next());
-            $(this).parent().prev().show();
-            $(this).parent().hide();
-        });
-    });
-});
+
+// Cancel Button
+$(cancelButton('button.category-edit-cancel'));

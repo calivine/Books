@@ -1,10 +1,11 @@
 import os
 import csv
+import datetime
 from Model import Model
 from flask import Blueprint, flash, url_for, render_template, request, session, jsonify, redirect, current_app as app
 from werkzeug.utils import secure_filename
 from services.constants import UPLOAD_FOLDER
-from services.utilities import format_date, allowed_file, db_assist, get_budget_period, convert_to_dict, set_date_window, format_transaction, update_name, get_monthly_spending, filter_pending
+from services.utilities import format_date, allowed_file, db_assist, get_budget_period, convert_to_dict, set_date_window, format_transaction, update_name, update_category_name, filter_pending
 
 
 bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
@@ -13,6 +14,10 @@ bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 # VIEW home dashboard
 @bp.route('/home')
 def home():
+    update_time = datetime.time(4)
+    now = datetime.datetime.now()
+
+    print(update_time, now.time())
     user_id = session['user_id']         # User ID
 
     budget_period = get_budget_period()  # Current budget period
@@ -26,6 +31,8 @@ def home():
 
     for r in respon:
         print(r)
+
+    # Get category names from Budget table
     categories = model.select('category', 'budget').where(['user_id', 'period'], '=').get([user_id, budget_period])
 
     transactions = list(map(convert_to_dict, response))
@@ -52,6 +59,17 @@ def update_description():
     print(description)
 
     return jsonify(description=description,
+                   id=trans_id)
+
+
+@bp.route('/update_category')
+def update_category():
+    category = request.args.get('update_name')
+    trans_id = request.args.get('id')
+
+    update_category_name(category, trans_id)
+
+    return jsonify(description=category,
                    id=trans_id)
 
 

@@ -22,7 +22,7 @@
                     <button class='description-edit-submit btn btn-success' type='submit'>Save</button>
                     <button class='description-edit-cancel btn' type='submit'>Cancel</button>
                 </td>
-                <td class='budget-category'>{{ transaction['budget_category'] }}</td>
+                <td class='budget-category' id='{{ transaction['transaction_id'] }}'>{{ transaction['budget_category'] }}</td>
                 <td class='category-edit'>
                     <label for='{{ transaction['transaction_id'] }}' id='category-edit-label'>Change Category</label>
                     <select name='category' id='{{ transaction['transaction_id'] }}' class='category-edit-select'>

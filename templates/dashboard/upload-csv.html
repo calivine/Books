@@ -1,0 +1,13 @@
+<fieldset>
+    <legend>CSV Upload</legend>
+    <form action='{{ url_for('dashboard.import_csv') }}' id='csv-upload-form' method=post enctype=multipart/form-data>
+        <label for='select-institution'>Select which bank you're uploading data for:</label>
+        <select name='institution' id='select-institution'>
+            <option value='capital-one'>Capital One</option>
+            <option value='td-bank'>TD Bank</option>
+            <option value='fidelity'>Fidelity</option>
+        </select>
+        <input type=file name=file>
+        <button type='submit'>Upload</button>
+    </form>
+</fieldset>

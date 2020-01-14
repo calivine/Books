@@ -33,10 +33,9 @@ function BudgetWorker() {
     };
 
     this.cancel = function (t) {
-        console.log(this.anchor, t);
-
         this.anchor = t.parent().parent().next();
-        this.updateForm = t.parent().parent();
+        console.log(this.anchor);
+        this.updateForm = t.parent();
         this.updateForm.fadeOut();
         this.anchor.fadeIn();
         this.updateForm.remove();

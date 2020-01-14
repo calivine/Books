@@ -186,10 +186,15 @@ def update_name(description, trans_id):
     get_db().commit()
 
 
+# def update_category(category, trans_id)
+# gets category name from id and updates the name based on category_name
+def update_category_name(category, trans_id):
+    get_db().execute('UPDATE activity SET budget_category = ? WHERE transaction_id = ?', (category, trans_id,))
+    get_db().commit()
+
+
 def pending(transaction):
     return transaction['pending']
-
-
 
 
 def filter_pending(transactions):

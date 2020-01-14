@@ -51,8 +51,7 @@ CREATE TABLE activity (
     category_type TEXT,
     category_name TEXT,
     sub_category TEXT,
-    budget_category INTEGER,
-    FOREIGN KEY (budget_category) REFERENCES category (id)
+    budget_category TEXT
 );
 
 CREATE TABLE budget (
