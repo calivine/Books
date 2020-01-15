@@ -5,7 +5,7 @@ from Model import Model
 from flask import Blueprint, flash, url_for, render_template, request, session, jsonify, redirect, current_app as app
 from werkzeug.utils import secure_filename
 from services.constants import UPLOAD_FOLDER
-from services.utilities import format_date, allowed_file, db_assist, get_budget_period, convert_to_dict, set_date_window, format_transaction, update_name, update_category_name, filter_pending
+from services.utilities import format_date, allowed_file, db_assist, get_budget_period, convert_to_dict, set_date_window, format_transaction, update_name, update_category_name, filter_pending, format_amount
 
 
 bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
@@ -26,14 +26,15 @@ def home():
 
     model = Model(user_id)               # Create database connection
 
-    response = model.select('activity').where(['date'], ['>=', '<=']).get((dates['start'], dates['end'], ))
+    response = model.select('activity').where(['amount', 'date'], ['>=', '>=', '<=']).get((0, dates['start'], dates['end'], ))
     respon = model.select('activity').get()
 
-    for r in respon:
-        print(r)
+    for r in response:
+        r['amount'] = format_amount(r['amount'])
+        print(r['amount'])
 
     # Get category names from Budget table
-    categories = model.select('category', 'budget').where(['user_id', 'period'], '=').get([user_id, budget_period])
+    categories = model.select('category', 'budget').where(['user_id', 'period']).get([user_id, budget_period])
 
     transactions = list(map(convert_to_dict, response))
 
@@ -83,9 +84,6 @@ def save_transaction():
     category = request.form['category']
     date = request.form['transaction_date']
 
-    if not description or not amount or not category or not date:
-        return redirect(url_for('dashboard.home'))
-
     print(description)
     print(amount)
     print(category)
@@ -95,9 +93,12 @@ def save_transaction():
     params = format_transaction(description, amount, date, category)
 
     # Save to activities table
-    db_assist('insert', 'activity', params)
+    # db_assist('insert', 'activity', params)
+    model = Model(session['user_id'])
+    model.insert('activity', params)
     print(params)
-    return redirect(url_for('dashboard.home'))
+
+    return jsonify(params)
 
 
 # UPLOAD and CREATE new transaction data from csv
