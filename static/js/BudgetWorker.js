@@ -71,7 +71,7 @@ function BudgetWorker() {
             console.log(newRow);
             $('tr#budget-totals').before(newRow);
             $('div#new-category-form').remove();
-            $('span#add-new-category').fadeIn();
+            $('span#plus-icon-container').fadeIn();
 
         });
         return false;
