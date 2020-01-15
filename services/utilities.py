@@ -153,7 +153,7 @@ def format_transaction(description, amount, date, category):
         '',              # Account ID
         amount,          # Amount
         category,        # Category
-        'category_id',   # Category ID
+        '',              # Category ID
         date,            # Date
         'USD',           # ISO Currency Code
         description,     # Name
@@ -164,7 +164,7 @@ def format_transaction(description, amount, date, category):
         '',              # Category type
         '',              # Category name
         '',              # Sub-category
-        ''               # Budget category
+        category         # Budget category
     )
     return params
 
@@ -201,3 +201,12 @@ def filter_pending(transactions):
     return filter(pending, transactions)
 
 
+def format_amount(amount):
+    amount = str(amount)
+    if '.' in amount:
+        if amount[len(amount) - 2] is '.':
+            return amount + '0'
+        else:
+            return amount
+    else:
+        return amount + '.00'
