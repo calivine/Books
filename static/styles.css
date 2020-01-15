@@ -80,6 +80,19 @@ td > button, td > input, form {
     margin: 0 auto;
 }
 
+fieldset#manual-input-form > input, select {
+    margin-right: 100%;
+    width: 200px;
+}
+
+fieldset#manual-input-form > label {
+    margin-bottom: 0;
+}
+
+button.manual-input {
+    width: 200px;
+}
+
 td.include-in-budget, td[class^="item-"] {
     width: 75px;
 }
