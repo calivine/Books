@@ -1,0 +1,40 @@
+<fieldset id='manual-input-form'>
+    <legend>
+        Manual Input
+    </legend>
+    <label for='description-input'>Transaction Description:</label>
+    <input type='text' class='manual-input' name='description' id='description-input'>
+    <label for='amount-input'>Amount $:</label>
+    <input type='number' step='0.01' class='manual-input' id='amount-input' name='amount'>
+    <label for='manual-select-category'>Category</label>
+    <select name='category' id='manual-select-category' class='manual-input'>
+        {% for category in categories %}
+            <option class='manual-input' value='{{ category['category'] }}'>{{ category['category'] }}</option>
+        {% endfor %}
+    </select>
+    <label for='transaction-date-input'>Transaction Date:</label>
+    <input type='date' class='manual-input' id='transaction-date-input' name='transaction_date'>
+    <button class='manual-input' id='manual-input-button' type='submit'>Save</button>
+</fieldset>
+
+<script>
+    $(function () {
+        $('button#manual-input-button').bind('click', function () {
+            console.log($('input#description-input').val());
+            $.post('/dashboard/save_transaction', {
+                description: $('input#description-input').val(),
+                amount: $('input#amount-input').val(),
+                category: $('select#manual-select-category').val(),
+                transaction_date: $('input#transaction-date-input').val()
+            }, function () {
+                $('fieldset#manual-input-form').fadeOut();
+                $('input#description-input').val("");
+                $('input#amount-input').val("");
+                $('input#transaction-date-input').val("");
+                $('fieldset#manual-input-form').fadeIn();
+
+            });
+            return false;
+        });
+    });
+</script>

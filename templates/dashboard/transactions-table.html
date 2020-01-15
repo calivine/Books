@@ -10,7 +10,7 @@
     </thead>
     <tbody>
     {% for transaction in transactions %}
-        {% if transaction['amount'] > 0 and transaction['category_id'] != '16000000' and transaction['pending'] == pending %}
+        {% if transaction['category_id'] != '16000000' and transaction['pending'] == pending %}
             <tr>
                 <td class='transaction-date'>{{ transaction['date'] }}</td>
                 <td class='transaction-amount'>${{ transaction['amount'] }}</td>
