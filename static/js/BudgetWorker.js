@@ -32,8 +32,17 @@ function BudgetWorker() {
         return false;
     };
 
-    this.cancel = function (t) {
+    this.categoryCancel = function (t) {
         this.anchor = t.parent().parent().next();
+        console.log(this.anchor);
+        this.updateForm = t.parent();
+        this.updateForm.fadeOut();
+        this.anchor.fadeIn();
+        this.updateForm.remove();
+    };
+
+    this.cancel = function (t) {
+        this.anchor = t.parent().next();
         console.log(this.anchor);
         this.updateForm = t.parent();
         this.updateForm.fadeOut();
@@ -45,14 +54,14 @@ function BudgetWorker() {
         return '<td class="budget-update-form"><input type="text" class="update-input" name="budget_update" value=' + value + '><button class="btn-primary budget-update" id="budget-update-submit">Save</button><button class="btn-secondary" id="budget-update-cancel">Cancel</button></td>';
     };
 
-    this.createNewCategoryForm = function (t) {
-        this.newCategoryForm = $('<div id="new-category-form"></div>');
-        this.categoryNameInput = '<label for="category">Category</label><input id="new-category-input" class="new-category-form-input" name="category" type="text" required>';
-        this.plannedBudget = '<label for="planned">Planned Budget</label><input id="new-planned-input" class="new-category-form-input" name=planned" type="text"><button id="category-submit" type="submit">Save</button><button id="category-cancel" type="button">Cancel</button>';
-        this.newCategoryForm.append(this.categoryNameInput);
-        this.newCategoryForm.append(this.plannedBudget);
+    this.displayNewCategoryForm = function (t) {
+        let newCategoryForm = $('<div id="new-category-form"></div>');
+        this.categoryNameInput = '<label for="new-category-input">Category</label><input id="new-category-input" class="new-category-form-input" name="category" type="text" required>';
+        this.plannedBudget = '<label for="new-planned-input">Planned Budget</label><input id="new-planned-input" class="new-category-form-input" name=planned" type="text"><button id="category-submit" type="submit">Save</button><button id="category-cancel" type="button">Cancel</button>';
+        newCategoryForm.append(this.categoryNameInput);
+        newCategoryForm.append(this.plannedBudget);
         this.newCategoryContainer = $('<div id="new-category-container"></div>');
-        this.newCategoryContainer.append(this.newCategoryForm);
+        this.newCategoryContainer.append(newCategoryForm);
         return t.before(this.newCategoryContainer);
     };
 
@@ -71,7 +80,7 @@ function BudgetWorker() {
             console.log(newRow);
             $('tr#budget-totals').before(newRow);
             $('div#new-category-form').remove();
-            $('span#plus-icon-container').fadeIn();
+            $('span#add-new-category').fadeIn();
 
         });
         return false;

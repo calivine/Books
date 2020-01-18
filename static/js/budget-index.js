@@ -1,5 +1,4 @@
 $(function () {
-    $('#add-new-category').hide();
     let worker = new BudgetWorker;
     // Tally total 'planned' budget
     worker.getPlannedTotal();
@@ -24,33 +23,20 @@ $(function () {
                     });
                 });
             });
-
         });
     });
     $(function () {
-        $('span#plus-icon-container').on('click', function () {
-            $(this).hide();
-            let newCategoryForm = worker.createNewCategoryForm($(this));
+        $('span#add-new-category').on('click', function () {
+            let newCategoryForm = worker.displayNewCategoryForm($(this));
             console.log(newCategoryForm.next());
             $('button#category-submit').on('click', function () {
                 worker.saveNewCategory($(this));
             });
             $('button#category-cancel').each(function () {
                 $(this).on('click', function () {
-                    worker.cancel($(this));
+                    worker.categoryCancel($(this));
                 });
             });
         });
-
     });
-});
-
-$(function () {
-   $('#plus-icon-container').on('mouseover', function() {
-       $('#add-new-category').slideToggle();
-
-   });
-    $('#plus-icon-container').on('mouseout', function() {
-       $('#add-new-category').slideToggle();
-   })
 });
