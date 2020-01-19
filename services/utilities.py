@@ -1,6 +1,8 @@
 from database.db import get_db
 from datetime import datetime, timedelta
 from services.constants import MONTH_STRING, ALLOWED_EXTENSIONS
+from services.transactions import save_transactions
+from Model import Model
 import string
 import random
 
@@ -148,7 +150,7 @@ def db_assist(command, table, query=None, args=None, opts=None):
 
 
 def format_transaction(description, amount, date, category):
-    transaction_id = generate_random_alpha_num(37)
+    tid = generate_random_alpha_num(37)
     params = (
         '',              # Account ID
         amount,          # Amount
@@ -159,7 +161,7 @@ def format_transaction(description, amount, date, category):
         description,     # Name
         0,               # Pending
         '',              # Pending Transaction ID
-        transaction_id,  # Transaction ID
+        tid,              # Transaction ID
         'special',       # Transaction Type
         '',              # Category type
         '',              # Category name
@@ -182,17 +184,18 @@ def get_monthly_spending(transactions):
 # Function takes update_name and id
 # gets transaction data based on id and updates the name based on update_name
 def update_name(description, trans_id):
-    get_db().execute('UPDATE activity SET name = ? WHERE transaction_id = ?', (description, trans_id,))
+    get_db().execute('UPDATE activity SET name = ? WHERE id = ?', (description, trans_id,))
     get_db().commit()
 
 
 # def update_category(category, trans_id)
 # gets category name from id and updates the name based on category_name
 def update_category_name(category, trans_id):
-    get_db().execute('UPDATE activity SET budget_category = ? WHERE transaction_id = ?', (category, trans_id,))
+    get_db().execute('UPDATE activity SET budget_category = ? WHERE id = ?', (category, trans_id,))
     get_db().commit()
 
 
+# Returns the key, pending from a transactions dict
 def pending(transaction):
     return transaction['pending']
 
@@ -201,6 +204,7 @@ def filter_pending(transactions):
     return filter(pending, transactions)
 
 
+# Add .00 or 0 to amounts for display
 def format_amount(amount):
     amount = str(amount)
     if '.' in amount:
@@ -210,3 +214,13 @@ def format_amount(amount):
             return amount
     else:
         return amount + '.00'
+
+
+# Function run by scheduler to update user accounts every 24 hours
+def update_account(app):
+    with app.app_context():
+        accounts = Model().select('item').get()
+    for account in accounts:
+        with app.app_context():
+            save_transactions(account['access_token'])
+    print("Update Finished.")

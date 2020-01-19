@@ -3,6 +3,8 @@ import plaid
 from flask import Flask, render_template
 from config.envSettings import CLIENT_ID, SECRET_KEY, PUBLIC_KEY
 from services.constants import PLAID_ENV
+from apscheduler.schedulers.background import BackgroundScheduler
+from Model import Model
 
 client = plaid.Client(client_id=CLIENT_ID,
                       secret=SECRET_KEY,
@@ -17,6 +19,8 @@ def create_app(test_config=None):
     import user
     import budget
     from database import db
+    from services.utilities import update_account
+
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
@@ -45,5 +49,11 @@ def create_app(test_config=None):
     app.register_blueprint(user.bp)
 
     app.register_blueprint(budget.bp)
+
+    scheduler = BackgroundScheduler()
+
+    scheduler.add_job(lambda: update_account(app), trigger='interval', hours=23)
+
+    scheduler.start()
 
     return app
