@@ -1,6 +1,7 @@
-$('td.category-edit').each(function () {
-    $(this).hide();
+$(function() {
+    $('td.category-edit').each().hide();
 });
+
 
 function displayEdit(tag)
 {
