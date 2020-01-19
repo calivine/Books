@@ -46,7 +46,7 @@ CREATE TABLE activity (
     name TEXT,
     pending INTEGER,
     pending_transaction TEXT,
-    transaction_id TEXT,
+    id TEXT,
     transaction_type TEXT,
     category_type TEXT,
     category_name TEXT,
