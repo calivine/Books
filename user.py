@@ -7,6 +7,7 @@ from services.transactions import save_transactions
 from services.plaidHelpers import save_item_accounts, create_mask
 from services.constants import PLAID_ENV
 from services.utilities import db_assist
+from Model import Model
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 
@@ -15,8 +16,8 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 @bp.route('/items', methods=('GET', 'POST'))
 def items():
     user_id = session['user_id']
-
-    account_list = db_assist('select', 'item', ['user_id'], [user_id])
+    account_list = Model().select('item').where(['user_id', '=', user_id]).get()
+    # account_list = db_assist('select', 'item', ['user_id'], [user_id])
     # Update transaction data
     for account in account_list:
         save_transactions(account['access_token'])

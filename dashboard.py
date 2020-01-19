@@ -5,7 +5,7 @@ from Model import Model
 from flask import Blueprint, flash, url_for, render_template, request, session, jsonify, redirect, current_app as app
 from werkzeug.utils import secure_filename
 from services.constants import UPLOAD_FOLDER
-from services.utilities import format_date, allowed_file, db_assist, get_budget_period, convert_to_dict, set_date_window, format_transaction, update_name, update_category_name, filter_pending, format_amount
+from services.utilities import format_date, allowed_file, get_budget_period, convert_to_dict, set_date_window, format_transaction, update_name, update_category_name, filter_pending, format_amount
 
 
 bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
@@ -26,15 +26,14 @@ def home():
 
     model = Model(user_id)               # Create database connection
 
-    response = model.select('activity').where(['amount', 'date'], ['>=', '>=', '<=']).get((0, dates['start'], dates['end'], ))
-    respon = model.select('activity').get()
+    response = model.select('activity').where(('amount', '>=', 0), ('date', '>=', dates['start']), ('date', '<=', dates['end'])).get()
 
     for r in response:
         r['amount'] = format_amount(r['amount'])
         print(r['amount'])
 
     # Get category names from Budget table
-    categories = model.select('category', 'budget').where(['user_id', 'period']).get([user_id, budget_period])
+    categories = model.select('budget', 'category').where(['user_id', '=', user_id], ['period', '=', budget_period]).get()
 
     transactions = list(map(convert_to_dict, response))
 
@@ -45,6 +44,15 @@ def home():
             transactions.remove(transaction)
 
     return render_template('dashboard/home.html', transactions=transactions, categories=categories)
+
+
+@bp.route('/model')
+def model():
+    moodel = Model()
+    m = moodel.select('activity', 'date', 'transaction_id', 'budget_category').where(['date', '>=', '2020-01-01'], ['date', '<=', '2020-01-31']).get()
+    print(m)
+    moodel.update('budget', 'actual', 100).where(['category', '=', 'Food']).save()
+    return render_template('dashboard/model_test.html')
 
 
 # EDIT transaction name
@@ -133,7 +141,8 @@ def import_csv():
                     category = row[4]
                     description = row[3]
                     params = format_transaction(description, amount, date, category)
-                    db_assist('insert', 'activity', params)
+                    Model().insert('activity', params)
+                    # db_assist('insert', 'activity', params)
                     # get_db().execute("INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params)
                     # get_db().commit()
             os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
