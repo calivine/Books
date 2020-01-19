@@ -1,0 +1,16 @@
+<nav>
+    <ul>
+        <li>
+            <a href='{{ url_for('dashboard.home') }}' class='button'>Home</a>
+        </li>
+        <li>
+            <a href='{{ url_for('user.items') }}' class='button'>Accounts</a>
+        </li>
+        <li>
+            <a href='{{ url_for('budget.budget') }}' class='button'>Budget</a>
+        </li>
+        <li>
+            <a href='{{ url_for('auth.logout') }}' class='button'>Logout</a>
+        </li>
+    </ul>
+</nav>

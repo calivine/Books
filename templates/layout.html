@@ -22,23 +22,7 @@
 <header>
     <h1>Book Keeper</h1>
     {% if session.user_id %}
-        <nav>
-            <ul>
-                <li>
-                    <a href='{{ url_for('dashboard.home') }}' class='button'>Home</a>
-                </li>
-                <li>
-                    <a href='{{ url_for('user.items') }}' class='button'>Accounts</a>
-                </li>
-                <li>
-                    <a href='{{ url_for('budget.budget') }}' class='button'>Budget</a>
-                </li>
-                <li>
-                    <a href='{{ url_for('auth.logout') }}' class='button'>Logout</a>
-                </li>
-            </ul>
-        </nav>
-
+        {% include 'modules/navbar.html' %}
     {% else %}
         <form id='login-form' action='{{ url_for('auth.login') }}' method='post'>
             <label for='username'>Username</label>
