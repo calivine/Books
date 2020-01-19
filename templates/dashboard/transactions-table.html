@@ -1,4 +1,4 @@
-<table class='sortable table'>
+<table class='sortable table shadow'>
     <thead>
     <tr>
         <th scope='col' class='transaction-date' data-sort='date'></th>
@@ -12,7 +12,7 @@
     {% for transaction in transactions %}
         {% if transaction['category_id'] != '16000000' and transaction['pending'] == pending %}
             <tr>
-                <td class='transaction-date'>{{ transaction['date'] }}</td>
+                <td class='transaction-date'><small>{{ transaction['date'] }}</small></td>
                 <td class='transaction-amount'>${{ transaction['amount'] }}</td>
                 <td class='description-edit-icon' id='{{ transaction['transaction_id'] }}'>{{ transaction['name'] }}<span class='icon-link'></span></td>
                 <td class='description-edit'>
