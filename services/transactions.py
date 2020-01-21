@@ -24,8 +24,8 @@ def save_transactions(access_token, start_date='{:%Y-%m-%d}'.format(datetime.dat
         # print(response['item'])
         transactions = format_category(transaction_details['transactions'])
         for data in transactions:
-            print(data['id'])
-            if data['id'] not in existing:
+            print(data['transaction_id'])
+            if data['transaction_id'] not in existing:
                 params = (data['account_id'],
                           data['amount'],
                           str(data['category']),
@@ -35,7 +35,7 @@ def save_transactions(access_token, start_date='{:%Y-%m-%d}'.format(datetime.dat
                           data['name'],
                           data['pending'],
                           data['pending_transaction_id'],
-                          data['id'],
+                          data['transaction_id'],
                           data['transaction_type'],
                           data['category_type'],
                           data['category_name'],

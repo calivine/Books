@@ -14,18 +14,18 @@
             <tr>
                 <td class='transaction-date'><small>{{ transaction['date'] }}</small></td>
                 <td class='transaction-amount'>${{ transaction['amount'] }}</td>
-                <td class='description-edit-icon' id='{{ transaction['transaction_id'] }}'>{{ transaction['name'] }}<span class='icon-link'></span></td>
+                <td class='description-edit-icon' id='{{ transaction['id'] }}'>{{ transaction['name'] }}<span class='icon-link'></span></td>
                 <td class='description-edit'>
-                    <label for='{{ transaction['transaction_id'] }}' id='description-edit-label'>Edit Description</label>
-                    <input type='text' class='description-edit-input' id='{{ transaction['transaction_id'] }}'
+                    <label for='{{ transaction['id'] }}' id='description-edit-label'>Edit Description</label>
+                    <input type='text' class='description-edit-input' id='{{ transaction['id'] }}'
                            name='description' value='{{ transaction['name'] }}'>
                     <button class='description-edit-submit btn btn-success' type='submit'>Save</button>
                     <button class='description-edit-cancel btn' type='submit'>Cancel</button>
                 </td>
-                <td class='budget-category' id='{{ transaction['transaction_id'] }}'>{{ transaction['budget_category'] }}</td>
+                <td class='budget-category' id='{{ transaction['id'] }}'>{{ transaction['budget_category'] }}</td>
                 <td class='category-edit'>
-                    <label for='{{ transaction['transaction_id'] }}' id='category-edit-label'>Change Category</label>
-                    <select name='category' id='{{ transaction['transaction_id'] }}' class='category-edit-select'>
+                    <label for='{{ transaction['id'] }}' id='category-edit-label'>Change Category</label>
+                    <select name='category' id='{{ transaction['id'] }}' class='category-edit-select'>
                         {% for category in categories %}
                             <option class='category-edit-option' value='{{ category['category'] }}'>{{ category['category'] }}</option>
                         {% endfor %}
