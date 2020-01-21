@@ -1,5 +1,5 @@
-<fieldset id='manual-input-form'>
-    <legend>
+<fieldset class='shadow' id='manual-input-form'>
+    <legend id='manual-input-legend'>
         Manual Input
     </legend>
     <label for='description-input'>Transaction Description:</label>
@@ -26,13 +26,28 @@
                 amount: $('input#amount-input').val(),
                 category: $('select#manual-select-category').val(),
                 transaction_date: $('input#transaction-date-input').val()
-            }, function () {
-                $('fieldset#manual-input-form').fadeOut();
+            }).done( function () {
+                let $inputForm = $('fieldset#manual-input-form');
+                let $successAlert = $('<div></div>');
+                let $closeButton = $('<button></button>');
+                let $x = $('<span></span>');
+                $inputForm.fadeOut();
                 $('input#description-input').val("");
                 $('input#amount-input').val("");
                 $('input#transaction-date-input').val("");
-                $('fieldset#manual-input-form').fadeIn();
-
+                $inputForm.fadeIn();
+                $x.attr('aria-hidden', 'true').text('&times;');
+                $closeButton.attr('type', 'button')
+                            .attr('aria-label', 'Close')
+                            .attr('data-dismiss', 'alert')
+                            .addClass('close')
+                            .prepend($x);
+                // $closeButton.prepend($x);
+                $successAlert.addClass('alert alert-primary').attr('role', 'alert').text('Saved New Transaction');
+                $successAlert.prepend($closeButton);
+                $inputForm.prepend($successAlert);
+            }).fail( function () {
+                $('fieldset#manual-input-form').fadeOut().fadeIn();
             });
             return false;
         });

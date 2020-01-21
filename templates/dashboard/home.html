@@ -16,15 +16,34 @@
         {% with transactions = transactions, pending = 0, categories = categories %}
             {% include 'dashboard/transactions-table.html' %}
         {% endwith %}
-
-        <div class='row'>
-            <div class='col'>
-                {% include 'dashboard/upload-csv.html' %}
+        <div class='accordion' id='input-accordion'>
+            <div class='card'>
+                <div class='card-header' id='headingOne'>
+                    <h2 class='mb-0'>
+                        <button class='btn btn-link' type='button' data-toggle='collapse' data-target='#collapseOne' aria-expanded='true' aria-controls='collapseOne'>
+                            CSV Upload
+                        </button>
+                    </h2>
+                </div>
+                <div class='collapse' id='collapseOne' aria-labelledby='headingOne' data-parent='#input-accordion'>
+                    <div class='card-body'>
+                        {% include 'dashboard/upload-csv.html' %}
+                    </div>
+                </div>
             </div>
-            <div class='col'>
-                {% with categories = categories %}
-                    {% include 'dashboard/manual-input.html' %}
-                {% endwith %}
+            <div class='card'>
+                <div class='card-header' id='headingTwo'>
+                    <h2 class='mb-0'>
+                        <button class='btn btn-link' type='button' data-toggle='collapse' data-target='#collapseTwo' aria-expanded='true' aria-controls='collapseTwo'>
+                            Manual Input
+                        </button>
+                    </h2>
+                </div>
+                <div class='collapse' id='collapseTwo' aria-labelledby='headingTwo' data-parent='#input-accordion'>
+                    <div class='card-body'>
+                        {% include 'dashboard/manual-input.html' %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
