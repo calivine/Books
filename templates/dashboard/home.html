@@ -6,8 +6,8 @@
 
 
 {% block main %}
-    <div class='container-fluid'>
-        <small>Pending Transactions</small>
+    <div class='container-fluid mt-4'>
+        <small class='mt-2'>Pending Transactions</small>
         {% with transactions = transactions, pending = 1, categories = categories %}
             {% include 'dashboard/transactions-table.html' %}
         {% endwith %}
