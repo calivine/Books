@@ -1,11 +1,12 @@
-$(function() {
-    $('td.category-edit').each().hide();
+$(function () {
+    $('td.category-edit').each(function () {
+        $(this).hide();
+    });
 });
 
 
-function displayEdit(tag)
-{
-    $(tag).each(function () {
+$(function () {
+    $('td.budget-category').each(function () {
         $(this).on('click', function () {
             console.log($(this));
             console.log($(this).next());
@@ -13,11 +14,10 @@ function displayEdit(tag)
             $(this).hide();
         });
     });
-}
+});
 
-function cancelButton(button)
-{
-    $(button).each(function () {
+$(function () {
+    $('button.category-edit-cancel').each(function () {
         $(this).on('click', function () {
             console.log($(this));
             console.log($(this).next());
@@ -25,11 +25,7 @@ function cancelButton(button)
             $(this).parent().hide();
         });
     });
-}
-
-// Display select
-$(displayEdit('td.budget-category'));
-
+});
 
 $(function () {
     $('button.category-edit-submit').each(function () {
@@ -50,7 +46,3 @@ $(function () {
         });
     });
 });
-
-
-// Cancel Button
-$(cancelButton('button.category-edit-cancel'));
