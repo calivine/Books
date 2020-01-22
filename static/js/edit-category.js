@@ -1,10 +1,10 @@
+/*
 $(function () {
-    $('td.category-edit').each(function () {
+    $('td.category-edit td.description-edit').each(function () {
         $(this).hide();
     });
 });
-
-
+*/
 $(function () {
     $('td.budget-category').each(function () {
         $(this).on('click', function () {

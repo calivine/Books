@@ -1,4 +1,4 @@
-$('td.description-edit').each(function () {
+$('td.description-edit, td.category-edit').each(function () {
     $(this).hide();
 });
 $(function () {

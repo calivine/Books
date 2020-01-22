@@ -6,8 +6,11 @@
 
 
 {% block main %}
-    <div class='container-fluid mt-4'>
-        <small class='mt-2'>Pending Transactions</small>
+    <div class='container-fluid mw-75 mt-5'>
+        {% include 'dashboard/pie-chart.html' %}
+        <small class='w-50 min-w-50 mt-2'>Pending Transactions</small>
+
+        {# PENDING TRANSACTIONS #}
         {% with transactions = transactions, pending = 1, categories = categories %}
             {% include 'dashboard/transactions-table.html' %}
         {% endwith %}
@@ -16,40 +19,13 @@
         {% with transactions = transactions, pending = 0, categories = categories %}
             {% include 'dashboard/transactions-table.html' %}
         {% endwith %}
-        <div class='accordion' id='input-accordion'>
-            <div class='card'>
-                <div class='card-header' id='headingOne'>
-                    <h2 class='mb-0'>
-                        <button class='btn btn-link' type='button' data-toggle='collapse' data-target='#collapseOne' aria-expanded='true' aria-controls='collapseOne'>
-                            CSV Upload
-                        </button>
-                    </h2>
-                </div>
-                <div class='collapse' id='collapseOne' aria-labelledby='headingOne' data-parent='#input-accordion'>
-                    <div class='card-body'>
-                        {% include 'dashboard/upload-csv.html' %}
-                    </div>
-                </div>
-            </div>
-            <div class='card'>
-                <div class='card-header' id='headingTwo'>
-                    <h2 class='mb-0'>
-                        <button class='btn btn-link' type='button' data-toggle='collapse' data-target='#collapseTwo' aria-expanded='true' aria-controls='collapseTwo'>
-                            Manual Input
-                        </button>
-                    </h2>
-                </div>
-                <div class='collapse' id='collapseTwo' aria-labelledby='headingTwo' data-parent='#input-accordion'>
-                    <div class='card-body'>
-                        {% include 'dashboard/manual-input.html' %}
-                    </div>
-                </div>
-            </div>
-        </div>
+
+        {# USER INPUT TRANSACTIONS #}
+        {% include 'dashboard/input-accordion.html' %}
     </div>
-    <script type='text/javascript' src='{{ url_for('static', filename='js/sort-table.js') }}'></script>
+    <script type='text/javascript' src='{{ url_for('static', filename='js/edit-category.js') }}'></script>
     <script type='text/javascript' src='{{ url_for('static', filename='js/edit-description.js') }}'></script>
     <script type='text/javascript' src='{{ url_for('static', filename='js/update-accounts.js') }}'></script>
-    <script type='text/javascript' src='{{ url_for('static', filename='js/edit-category.js') }}'></script>
+    <script type='text/javascript' src='{{ url_for('static', filename='js/sort-table.js') }}'></script>
 
 {% endblock %}
