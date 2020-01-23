@@ -2,7 +2,7 @@ import plaid
 from plaid.errors import APIError, ItemError
 from flask import Blueprint, redirect, render_template, request, session, url_for, jsonify
 from database.db import get_db
-from app import client
+from app import CLIENT
 from services.transactions import save_transactions
 from services.plaidHelpers import save_item_accounts, create_mask
 from services.constants import PLAID_ENV
@@ -40,7 +40,7 @@ def get_access_token():
     public_token = request.form['public_token']
 
     try:
-        exchange_response = client.Item.public_token.exchange(public_token)
+        exchange_response = CLIENT.Item.public_token.exchange(public_token)
         access_token = exchange_response['access_token']
         item_id = exchange_response['item_id']
     except plaid.errors.PlaidError as e:
@@ -48,9 +48,9 @@ def get_access_token():
 
     item_mask = create_mask(item_id)
     print(item_mask, access_token, item_id)
-    response = client.Item.get(access_token)
+    response = CLIENT.Item.get(access_token)
     inst_id = response['item']['institution_id']
-    response = client.Institutions.get_by_id(inst_id)
+    response = CLIENT.Institutions.get_by_id(inst_id)
     inst_name = response['institution']['name']
     db.execute("INSERT INTO item VALUES (?, ?, ?, ?, ?)", (session['user_id'], access_token, item_id, item_mask, inst_name,))
     db.commit()
@@ -69,7 +69,7 @@ def get_account_details():
 
     access_token = get_db().execute("SELECT access_token FROM item WHERE item_mask = ?", (mask,)).fetchone()
     try:
-        item_response = client.Item.get(access_token['access_token'])
+        item_response = CLIENT.Item.get(access_token['access_token'])
         item_details = {
             'item_id': item_response['item']['item_id'],
             'last_update': item_response['status']['transactions']['last_successful_update'],
@@ -81,7 +81,7 @@ def get_account_details():
         print(e)
 
     try:
-        response = client.Accounts.get(access_token['access_token'])
+        response = CLIENT.Accounts.get(access_token['access_token'])
         i = 1
         for account in response['accounts']:
             acct = 'account' + str(i)
@@ -109,7 +109,7 @@ def update_account_link(mask):
     public_token = None
     # Get a new public token
     try:
-        response = client.Item.public_token.create(access_token['access_token'])
+        response = CLIENT.Item.public_token.create(access_token['access_token'])
         public_token = response['public_token']
     except plaid.errors.PlaidError as e:
         print(e)
@@ -117,7 +117,7 @@ def update_account_link(mask):
     return render_template('user/link_update.html',
                            public_token=public_token,
                            plaid_environment=PLAID_ENV,
-                           public_key=client.public_key)
+                           public_key=CLIENT.public_key)
 
 
 # GET ROTATE access token page
@@ -132,7 +132,7 @@ def rotate_access_token(token):
     db = get_db()
     access_token = db.execute("SELECT access_token, id FROM item WHERE item_mask = ?", (token,)).fetchone()
     try:
-        response = client.Item.access_token.invalidate(access_token['access_token'])
+        response = CLIENT.Item.access_token.invalidate(access_token['access_token'])
         new_access_token = response['new_access_token']
         print(new_access_token)
         db.execute("UPDATE item SET access_token = ? WHERE id = ?", (new_access_token, access_token['id'],))
@@ -153,7 +153,7 @@ def delete(access_token):
 def destroy(access_token):
     db = get_db()
     try:
-        response = client.Item.remove(access_token)
+        response = CLIENT.Item.remove(access_token)
         print('Delete: ', response)
         print(type(response))
     except plaid.errors.PlaidError as e:

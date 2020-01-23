@@ -1,20 +1,37 @@
+"""
+    App factory
+"""
 import os
 import plaid
+import auth
+import index
 from flask import Flask, render_template
 from config.envSettings import CLIENT_ID, SECRET_KEY, PUBLIC_KEY
 from services.constants import PLAID_ENV
 from apscheduler.schedulers.background import BackgroundScheduler
 from Model import Model
 
-client = plaid.Client(client_id=CLIENT_ID,
+CLIENT = plaid.Client(client_id=CLIENT_ID,
                       secret=SECRET_KEY,
                       public_key=PUBLIC_KEY,
                       environment=PLAID_ENV,
                       api_version='2019-05-29')
 
+BLUEPRINTS = [
+    auth,
+    index
+]
 
-def create_app(test_config=None):
-    import auth
+
+def create_app(test_config=None, blueprints=None):
+    """
+        Create_app/ App factory
+        :param test_config: None
+        :param blueprints: None
+        :return: flask app
+    """
+    if blueprints is None:
+        blueprints = BLUEPRINTS
     import dashboard
     import user
     import budget
@@ -42,7 +59,7 @@ def create_app(test_config=None):
 
     db.init_app(app)
 
-    app.register_blueprint(auth.bp)
+    app.register_blueprint(blueprints[0])
 
     app.register_blueprint(dashboard.bp)
 
