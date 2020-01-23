@@ -1,5 +1,5 @@
 from database.db import get_db
-from app import client
+from app import CLIENT
 from plaid.errors import ItemError
 from services.transactions import save_transactions
 
@@ -8,7 +8,7 @@ from services.transactions import save_transactions
 def save_item_accounts(access_token):
     db = get_db()
     try:
-        account_list = client.Accounts.get(access_token)
+        account_list = CLIENT.Accounts.get(access_token)
         for account in account_list['accounts']:
             db.execute("INSERT INTO account VALUES (?, ?, ?, ?, ?, ?, ?)", (account['account_id'], account['mask'], account['name'], account['official_name'], account['type'], account['subtype'], access_token,))
             db.commit()

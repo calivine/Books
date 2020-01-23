@@ -1,7 +1,7 @@
 import datetime
 import plaid
 from database.db import get_db
-from app import client
+from app import CLIENT
 from plaid.errors import APIError
 
 
@@ -19,7 +19,7 @@ def save_transactions(access_token, start_date='{:%Y-%m-%d}'.format(datetime.dat
     if len(check_response) is None:
         print("empty")
     try:
-        transaction_details = client.Transactions.get(access_token, start_date=start, end_date=end)
+        transaction_details = CLIENT.Transactions.get(access_token, start_date=start, end_date=end)
         # print(response['accounts'])
         # print(response['item'])
         transactions = format_category(transaction_details['transactions'])
