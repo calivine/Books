@@ -6,10 +6,11 @@ import plaid
 import auth
 import index
 from flask import Flask, render_template
+from database import db
 from config.envSettings import CLIENT_ID, SECRET_KEY, PUBLIC_KEY
 from services.constants import PLAID_ENV
 from apscheduler.schedulers.background import BackgroundScheduler
-from Model import Model
+
 
 CLIENT = plaid.Client(client_id=CLIENT_ID,
                       secret=SECRET_KEY,
@@ -17,26 +18,30 @@ CLIENT = plaid.Client(client_id=CLIENT_ID,
                       environment=PLAID_ENV,
                       api_version='2019-05-29')
 
-BLUEPRINTS = [
-    auth,
-    index
-]
+CONFIG_SETTINGS = {
+    'blueprints': [
+        auth.bp,
+        index.bp
+    ]
+}
 
 
-def create_app(test_config=None, blueprints=None):
+def create_app(test_config=None, settings=None, database=db):
     """
         Create_app/ App factory
         :param test_config: None
-        :param blueprints: None
+        :param settings: None
+        :param database: db
         :return: flask app
     """
-    if blueprints is None:
-        blueprints = BLUEPRINTS
+    if settings is None:
+        settings = CONFIG_SETTINGS
+    from services.utilities import update_account
     import dashboard
     import user
     import budget
-    from database import db
-    from services.utilities import update_account
+
+
 
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
@@ -57,9 +62,9 @@ def create_app(test_config=None, blueprints=None):
     def index():
         return render_template('index.html')
 
-    db.init_app(app)
+    database.init_app(app)
 
-    app.register_blueprint(blueprints[0])
+    app.register_blueprint(settings['blueprints'][0])
 
     app.register_blueprint(dashboard.bp)
 

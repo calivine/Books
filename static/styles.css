@@ -1,234 +1,102 @@
-@font-face {
-    font-family: 'Akkurat';
-    src: url("../fonts/Akkurat.ttf");
+html {
+  background-color: #F5F1F1;
+  font-family: "Akkurat", "Yu Gothic UI", sans-serif;
+  font-size: 16px;
 }
-
-/* box sizing: http://www.paulirish.com/2012/box-sizing-border-box-ftw
-* {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-
- */
 
 body {
-    background-color: inherit;
-    display: block;
-    margin: 0 auto;
-    width: 75vw;
-}
-
-footer {
-    background-color: inherit;
-    margin: 5px 0;
-    text-align: center;
-
-    /* sticky footer */
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    height: 20px;
-    line-height: 20px; /* Vertically center the text there */
-}
-
-form#login-form {
-    border: none;
-    height: 25px;
-    margin: 3px;
-    padding: 0;
-    font-size: .75em;
-}
-
-header {
-    height: 75px;
-}
-
-html {
-    background-color: #F5F1F1;
-    font-family: 'Akkurat', 'Yu Gothic UI', sans-serif;
-    font-size: 16px;
-}
-
-input#login-submit {
-    background-color: #b9e4e3;
-    color: #444444;
-    height: 28px;
-    margin-bottom: 10px;
-    padding: 6px;
-    text-shadow: 0 1px 1px #ffffff;
-    text-align: center;
-    vertical-align: middle;
-
+  background-color: inherit;
+  height: 100vh;
 }
 
 nav li {
-    display: inline;
-    list-style-type: none;
-    margin-right: 25px;
+  display: inline-block;
+  list-style-type: none;
+  margin-right: 25px;
 }
 
-section {
-    margin: 0 auto;
-    text-align: center;
-    width: 500px;
+td button, td input, td form {
+  display: inline-block;
+  margin: 0 auto;
 }
 
-td > button, td > input, form {
-    display: inline-block;
-    margin: 0 auto;
+#manual-input-form input, #manual-input-form select {
+  margin-right: 100%;
+  width: 200px;
+}
+#manual-input-form label {
+  margin-bottom: 0;
+}
+#manual-input-form button {
+  width: 200px;
 }
 
-fieldset#manual-input-form > input, select {
-    margin-right: 100%;
-    width: 200px;
+#manual-input-button {
+  width: 200px;
 }
 
-fieldset#manual-input-form > label {
-    margin-bottom: 0;
+footer {
+  background-color: inherit;
+  margin: 5px 0;
+  text-align: center;
+  /* sticky footer */
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
+  /* Vertically center the text there */
 }
 
-button.manual-input {
-    width: 200px;
+#login-form {
+  border: none;
+  padding: 0;
+  font-size: 0.75em;
 }
 
-td.include-in-budget, td[class^="item-"] {
-    width: 75px;
+#login-submit {
+  width: 135px;
 }
 
-td[class^="transaction-"], th[class^="transaction-"] {
-    max-width: 130px;
+.pie {
+  border-radius: 100%;
+  height: calc(var(--size, 250) * 1px);
+  position: relative;
+  width: calc(var(--size, 250) * 1px);
+  margin: 0 auto;
+  overflow: hidden;
 }
 
-.button-container, .update-input {
-    display: block;
-    margin: 0;
-    max-width: 130px;
+.pie_segment {
+  --a: calc(var(--over50, 0) * -100%);
+  --b: calc((1 + var(--over50, 0)) * 100%);
+  --degrees: calc((var(--offset, 0) / 100) * 360);
+  height: 100%;
+  position: absolute;
+  transform: translate(0, -50%) rotate(90deg) rotate(calc(var(--degrees) * 1deg));
+  clip-path: polygon(var(--a) var(--a), var(--b) var(--a), var(--b), var(--b), var(--a) var(--b));
+  -webkit-clip-path: polygon(var(--a) var(--a), var(--b) var(--a), var(--b), var(--b), var(--a) var(--b));
+  transform-origin: 50% 100%;
+  width: 100%;
 }
 
-.budget-category-planned {
-    min-width: 150px;
+.pie_segment:after,
+.pie_segment:before {
+  background: var(--bg, #e74c3c);
+  content: "";
+  height: 100%;
+  position: absolute;
+  width: 100%;
 }
 
-.budget-update-button {
-    width: 65px;
+.pie_segment:before {
+  --degrees: calc((var(--value, 45) / 100) * 360);
+  transform: translate(0, 100%) rotate(calc(var(--degrees) * 1deg));
+  transform-origin: 50% 0;
 }
 
-.description-edit-input {
-    margin: 0;
-    width: 276px;
+.pie_segment:after {
+  opacity: var(--over50, 0);
 }
 
-.description-edit-submit, .description-edit-cancel {
-    margin: 0;
-    width: 136px;
-}
-
-.description-edit-submit:active, .description-edit-cancel:active {
-    color: #cccccc;
-}
-
-.import-data {
-    min-width: 25%;
-}
-
-.item-delete-buttons {
-    margin: 25px;
-    width: 50px;
-    padding: 15px;
-}
-
-.fas .fa-key {
-    color: #000000;
-}
-
-.fa-key:active {
-    color: #aaaaaa;
-}
-
-.new-category-form-input {
-    display: block;
-}
-
-#wrench-icon, #redo-alt-icon {
-    color: #000000;
-}
-
-#add-new-category {
-    margin-left: 6vw;
-}
-
-#add-new-category:hover {
-    cursor: pointer;
-}
-
-#budget-totals {
-    border-top: 2px solid #000000;
-}
-
-#cash_balance {
-    text-align: center;
-}
-
-#close-details {
-    margin: 0 175px;
-    width: 175px;
-}
-
-#csv-upload-form {
-    margin: 0 auto;
-    min-width: 75%;
-}
-
-#description-edit-label {
-    display: block;
-}
-
-#get-cash_balance {
-    border: 5px solid black;
-    font-family: 'Dosis', sans-serif;
-    font-size: 4em;
-    font-weight: 700;
-    height: 150px;
-    margin: 0 auto;
-}
-
-#item-details-display {
-    background-color: #D3E7E9;
-    -moz-box-shadow: 0 0 10px #777777;
-    -webkit-box-shadow: 0 0 10px #777777;
-    box-shadow: 0 0 10px #777777;
-    position: fixed;
-    z-index: 10;
-    margin: 0 30vw;
-    height: 30vh;
-}
-
-#item-details-list {
-    list-style-type: none;
-}
-
-
-#monthly_activity, #get-income, #get-spending, #get-month-balance {
-    font-size: 1.25em;
-}
-
-#new-category-form {
-    margin-left: 58px;
-}
-
-#planned-total-label {
-    width: inherit;
-}
-
-#plus-icon-container {
-    display: inline-block;
-    min-width: 45px;
-    min-height: 45px;
-    padding: auto;
-}
-
-#plus-icon {
-    margin: 20px;
-}
+/*# sourceMappingURL=styles.css.map */

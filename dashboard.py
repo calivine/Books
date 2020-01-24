@@ -46,15 +46,6 @@ def home():
     return render_template('dashboard/home.html', transactions=transactions, categories=categories)
 
 
-@bp.route('/model')
-def model():
-    moodel = Model()
-    m = moodel.select('activity', 'date', 'id', 'budget_category').where(['date', '>=', '2020-01-01'], ['date', '<=', '2020-01-31']).get()
-    print(m)
-    moodel.update('budget', 'actual', 100).where(['category', '=', 'Food']).save()
-    return render_template('dashboard/model_test.html')
-
-
 # EDIT transaction name
 @bp.route('/update_description')
 def update_description():

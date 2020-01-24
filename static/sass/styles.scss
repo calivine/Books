@@ -1,0 +1,108 @@
+html {
+    background-color: #F5F1F1;
+    font-family: 'Akkurat', 'Yu Gothic UI', sans-serif;
+    font-size: 16px;
+}
+
+body {
+  background-color: inherit;
+  height: 100vh;
+}
+
+nav {
+  li {
+    display: inline-block;
+    list-style-type: none;
+    margin-right: 25px;
+  }
+}
+
+td {
+  button, input, form {
+    display: inline-block;
+    margin: 0 auto;
+  }
+}
+
+#manual-input-form {
+  input, select {
+    margin-right: 100%;
+    width: 200px;
+  }
+
+  label {
+    margin-bottom: 0;
+  }
+
+  button {
+    width: 200px
+  }
+}
+
+#manual-input-button {
+  width: 200px;
+}
+
+footer {
+    background-color: inherit;
+    margin: 5px 0;
+    text-align: center;
+
+    /* sticky footer */
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    height: 20px;
+    line-height: 20px; /* Vertically center the text there */
+}
+
+#login-form {
+    border: none;
+    padding: 0;
+    font-size: .75em;
+}
+
+#login-submit {
+  width: 135px;
+}
+
+.pie {
+    border-radius: 100%;
+    height: calc(var(--size, 250) * 1px);
+    position: relative;
+    width: calc(var(--size, 250) * 1px);
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.pie_segment {
+    --a: calc(var(--over50, 0) * -100%);
+    --b: calc((1 + var(--over50, 0)) * 100%);
+    --degrees: calc((var(--offset, 0) / 100) * 360);
+    height: 100%;
+    position: absolute;
+    transform: translate(0, -50%) rotate(90deg) rotate(calc(var(--degrees) * 1deg));
+    clip-path: polygon(var(--a) var(--a), var(--b) var(--a), var(--b), var(--b), var(--a) var(--b));
+    -webkit-clip-path: polygon(var(--a) var(--a), var(--b) var(--a), var(--b), var(--b), var(--a) var(--b));
+    transform-origin: 50% 100%;
+    width: 100%;
+}
+
+.pie_segment:after,
+.pie_segment:before {
+    background: var(--bg, #e74c3c);
+    content: '';
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+
+.pie_segment:before {
+    --degrees: calc((var(--value, 45) / 100) * 360);
+    transform: translate(0, 100%) rotate(calc(var(--degrees) * 1deg));
+    transform-origin: 50% 0;
+}
+
+.pie_segment:after {
+    opacity: var(--over50, 0);
+}
