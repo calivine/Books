@@ -1,4 +1,7 @@
-<table class='min-w-50 w-50 mx-auto p-2 sortable table shadow'>
+<table class='mx-auto p-2 sortable table shadow'>
+    {% if pending %}
+        <small class='w-50 min-w-50 mt-2'>Pending Transactions</small>
+    {% endif %}
     <thead>
     <tr>
         <th scope='col' class='transaction-date' data-sort='date'></th>
