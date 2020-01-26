@@ -224,3 +224,8 @@ def update_account(app):
         with app.app_context():
             save_transactions(account['access_token'])
     print("Update Finished.")
+
+
+# remaining()
+def remaining(planned, actual):
+    return planned - actual

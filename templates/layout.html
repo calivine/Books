@@ -14,11 +14,13 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js'></script>
     <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-
+    <script src='https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js'></script>
     <!-- Personal CSS stylesheet -->
     <link href='{{ url_for('static', filename='styles.css') }}' rel='stylesheet'/>
     <title>{% block title %}Bookkeeper{% endblock %}</title>
 </head>
+
+<body>
 <header>
     <h1 class='mb-2'>Book Keeper</h1>
     {% if session.user_id %}
@@ -27,7 +29,6 @@
         {% include 'auth/login.html' %}
     {% endif %}
 </header>
-<body>
 
 {% block main %}{% endblock %}
 

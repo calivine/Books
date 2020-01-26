@@ -6,9 +6,11 @@
 
 
 {% block main %}
-    <div class='container-fluid mw-75 mt-5'>
-        {% include 'dashboard/pie-chart.html' %}
-        <small class='w-50 min-w-50 mt-2'>Pending Transactions</small>
+    <div class='container-fluid w-50 mt-5 bg-light shadow'>
+        {# PIE CHART #}
+        {% with budget = budget, category_labels = category_labels, colors = colors %}
+            {% include 'dashboard/pie-chart.html' %}
+        {% endwith %}
 
         {# PENDING TRANSACTIONS #}
         {% with transactions = transactions, pending = 1, categories = categories %}

@@ -1,0 +1,28 @@
+<canvas id='myChart' width='100' height='100'></canvas>
+
+<script>
+
+    let colors = {{ colors|safe }};
+    let labels = {{ category_labels|safe }};
+    console.log(labels);
+
+    let ctx = document.getElementById('myChart').getContext('2d');
+    let myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: {{ budget }},
+                backgroundColor: colors,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutoutPercentage: 40,
+            animation: {
+                animateRotate: true,
+                duration: 8000
+            }
+        }
+    });
+</script>
