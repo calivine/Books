@@ -30,7 +30,6 @@ class Model(object):
         query = ', '.join(args[1:]) if len(args) > 1 else '*'
         command = 'SELECT '
         self.statement = command + query + " FROM " + table
-        print(self.statement)
         return self
 
     # "INSERT INTO activity VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", params
@@ -51,7 +50,6 @@ class Model(object):
         self.command = 'UPDATE '
         self.set_clause = args[2]
         self.statement = self.command + self.table + ' SET ' + args[1] + ' = ?'
-        print(self.statement)
         return self
 
     # WHERE-method takes arguments:
@@ -64,11 +62,7 @@ class Model(object):
         else:
             for arg in args:
                 self.arguments.append(arg[2])
-        print(self._make_predicate(*args))
         self.predicate = self._make_predicate(*args)
-        print(self.arguments)
-        print(self.predicate)
-        print(self._build())
         return self
 
     # Build expression from table, query, and predicate
