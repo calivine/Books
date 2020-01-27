@@ -1,0 +1,48 @@
+<div class='d-flex flex-row tabs'>
+    <button class='btn btn-outline-light tab active' data-chart='actual'>Actual</button>
+    <button class='btn btn-outline-light tab' data-chart='planned'>Planned</button>
+</div>
+<div class='tab-content-container'>
+    <div id='actual' class='tab-content active'>
+        {# ACTUAL BUDGET PIE CHART #}
+        {% with data = actual, labels = labels, colors = colors %}
+            {% include './modules/charts/pie-chart-actual.html' %}
+        {% endwith %}
+    </div>
+    <div id='planned' class='tab-content'>
+        {# PLANNED BUDGET PIE CHART #}
+        {% with data = planned, labels = labels, colors = colors %}
+            {% include './modules/charts/pie-chart.html' %}
+        {% endwith %}
+    </div>
+</div>
+
+<script>
+    let tabs = document.querySelectorAll(".tab");
+    let tabContent = document.querySelectorAll(".tab-content");
+
+
+    tabs.forEach(function (el) {
+        el.addEventListener("click", openTabs);
+    });
+
+
+    function openTabs(el) {
+        let btnTarget = el.currentTarget;
+        let chart = btnTarget.dataset.chart;
+
+        // Remove active class from all tabs
+        tabContent.forEach(function (el) {
+            el.classList.remove("active");
+        });
+
+        tabs.forEach(function (el) {
+            el.classList.remove("active");
+        });
+
+        // Add active class to chart that was clicked
+        document.querySelector("#" + chart).classList.add("active");
+
+        btnTarget.classList.add("active");
+    }
+</script>

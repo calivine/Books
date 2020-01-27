@@ -7,9 +7,14 @@
 
 {% block main %}
     <div class='container-fluid w-50 mt-5 bg-light shadow'>
-        {# PIE CHART #}
-        {% with budget = budget, category_labels = category_labels, colors = colors %}
-            {% include 'dashboard/pie-chart.html' %}
+        {# TABS CONTAINER #}
+        {% with planned = planned, actual = actual, labels = labels, colors = colors %}
+            {% include './modules/tab-container.html' %}
+        {% endwith %}
+
+        {# ACTUAL BUDGET PROGRESS BARS #}
+        {% with actual = actual[0], planned = planned %}
+            {% include './modules/charts/progress-bar.html' %}
         {% endwith %}
 
         {# PENDING TRANSACTIONS #}

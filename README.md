@@ -1,4 +1,4 @@
-# Books Financial Planner (v1.5.1): 
+# Ledger Financial Planner (v1.6.0): 
 ## Monthly budget planning, income & expense tracking
 
 #### Includes:

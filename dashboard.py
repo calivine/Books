@@ -5,7 +5,7 @@ from Model import Model
 from flask import Blueprint, flash, url_for, render_template, request, session, jsonify, redirect, current_app as app
 from werkzeug.utils import secure_filename
 from services.constants import UPLOAD_FOLDER, COLORS
-from services.utilities import format_date, allowed_file, get_budget_period, convert_to_dict, set_date_window, format_transaction, update_name, update_category_name, filter_pending, format_amount, remaining
+from services.utilities import format_date, allowed_file, get_budget_period, set_date_window, format_transaction, update_name, update_category_name, filter_pending, format_amount, remaining, find
 
 
 bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
@@ -30,41 +30,34 @@ def home():
 
     for r in response:
         r['amount'] = format_amount(r['amount'])
-        print(r['amount'])
 
     # Get category names from Budget table
     categories = model.select('budget', 'category').where(['user_id', '=', user_id], ['period', '=', budget_period]).get()
     budget = model.select('budget', 'category', 'planned', 'actual').where(['user_id', '=', user_id], ['period', '=', budget_period]).get()
-    print(budget)
 
-    amounts = []
-    category_labels = []
-    remaining_budget = []
-    for amount in budget:
-        print(type(amount))
-        print(amount.keys)
-        amounts.append(int(amount['planned']))
-        category_labels.append(str(amount['category']))
-        remaining_budget.append((amount['planned']) - int(amount['actual']))
+    actual = find('actual', budget)
+    planned = find('planned', budget)
+    labels = find('categories', budget)
 
-    print(category_labels)
-    print(amounts)
+    remaining_budget = list(map(remaining, planned, actual))
     print(remaining_budget)
-
-    remain = list(map(remaining, amounts, amounts))
-    print(remain)
-
-
-
-    # transactions = list(map(convert_to_dict, response))
     transactions = response
+    print(transactions)
     pending_transactions = filter_pending(transactions)
 
     for transaction in transactions:
+        for pending in pending_transactions:
+            # If processed transaction ID = pending ID
+            if transaction['pending_transaction'] == pending['id']:
+                print('found')
+                pending_transactions.remove(pending)
         if transaction['id'] in pending_transactions:
             transactions.remove(transaction)
 
-    return render_template('dashboard/home.html', transactions=transactions, categories=categories, budget=amounts, category_labels=category_labels, colors=COLORS[:len(amounts)-1])
+    print(pending_transactions)
+    print(transactions)
+
+    return render_template('dashboard/home.html', transactions=transactions, categories=categories, planned=planned, actual=actual, labels=labels, colors=COLORS[:len(planned)-1])
 
 
 # EDIT transaction name

@@ -161,7 +161,7 @@ def format_transaction(description, amount, date, category):
         description,     # Name
         0,               # Pending
         '',              # Pending Transaction ID
-        tid,              # Transaction ID
+        tid,             # Transaction ID
         'special',       # Transaction Type
         '',              # Category type
         '',              # Category name
@@ -201,7 +201,7 @@ def pending(transaction):
 
 
 def filter_pending(transactions):
-    return filter(pending, transactions)
+    return list(filter(pending, transactions))
 
 
 # Add .00 or 0 to amounts for display
@@ -226,6 +226,42 @@ def update_account(app):
     print("Update Finished.")
 
 
+def find(key, data):
+    funcs = {
+        'planned': return_planned,
+        'actual': return_actual,
+        'categories': return_categories
+    }
+    return filter_dict(funcs[key], data)
+
+
+def filter_dict(func, data):
+    return list(map(func, data))
+
+
+def return_planned(d):
+    return int(d['planned'])
+
+
+def return_actual(d):
+    return int(d['actual'])
+
+
+def return_categories(d):
+    return d['category']
+
+
 # remaining()
 def remaining(planned, actual):
-    return planned - actual
+    return int(planned) - int(actual)
+
+
+# Update Actual budget amounts based on transaction data
+def update_actuals(transactions, budget):
+    for transaction in transactions:
+        for category in budget:
+            if transaction['category'] == category['category']:
+                actual = int(budget['actual'])
+                actual += int(transaction['amount'])
+                budget['actual'] = actual
+    return budget
